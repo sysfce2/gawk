@@ -30,6 +30,10 @@
 #include "awk.h"	/* includes config.h for us */
 
 
+#ifndef HAVE_REALLOCARRAY
+#include "missing_d/reallocarray.c"
+#endif /* HAVE_REALLOCARRAY */
+
 #ifndef HAVE_SYSTEM
 #include "missing_d/system.c"
 #endif /* HAVE_SYSTEM */

@@ -29,6 +29,12 @@
  * These definitions are taken from the Autoconf 2.63 manual. Not pretty.
  */
 
+/* PCC pretends to be GCC but cannot handle isinf, isnan.  */
+#ifdef __PCC__
+# undef isinf
+# undef isnan
+#endif
+
 #ifndef HAVE_ISNAN
 #ifndef isnan
 # define isnan(x) \

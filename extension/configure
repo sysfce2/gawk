@@ -8778,16 +8778,25 @@ then
 	ac_fn_c_check_func "$LINENO" "mmap" "ac_cv_func_mmap"
 if test "x$ac_cv_func_mmap" = xyes
 then :
+  printf "%s\n" "#define HAVE_MMAP 1" >>confdefs.h
 
 fi
-
-	ac_fn_c_check_func "$LINENO" "munmap" "ac_cv_func_munmap"
+ac_fn_c_check_func "$LINENO" "munmap" "ac_cv_func_munmap"
 if test "x$ac_cv_func_munmap" = xyes
 then :
+  printf "%s\n" "#define HAVE_MUNMAP 1" >>confdefs.h
+
+fi
+ac_fn_c_check_func "$LINENO" "atexit" "ac_cv_func_atexit"
+if test "x$ac_cv_func_atexit" = xyes
+then :
+  printf "%s\n" "#define HAVE_ATEXIT 1" >>confdefs.h
 
 fi
 
-	if test $ac_cv_func_mmap = yes && test $ac_cv_func_munmap = yes
+	if test $ac_cv_func_mmap = yes &&
+	   test $ac_cv_func_munmap = yes &&
+	   test $ac_cv_func_atexit = yes
 	then
 		use_persistent_malloc=yes
 		case $host_os in
@@ -17195,6 +17204,15 @@ then :
 fi
 
 
+
+
+
+
+
+
+
+
+
 ac_header_dirent=no
 for ac_hdr in dirent.h sys/ndir.h sys/dir.h ndir.h; do
   as_ac_Header=`printf "%s\n" "ac_cv_header_dirent_$ac_hdr" | $as_tr_sh`
@@ -17765,6 +17783,55 @@ printf "%s\n" "#define DIR_FD_MEMBER_NAME $gl_cv_sys_dir_fd_member_name" >>confd
 
 
 
+
+  { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for flexible array member" >&5
+printf %s "checking for flexible array member... " >&6; }
+if test ${ac_cv_c_flexmember+y}
+then :
+  printf %s "(cached) " >&6
+else $as_nop
+  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+#include <stdlib.h>
+            #include <stdio.h>
+            #include <stddef.h>
+            struct m { struct m *next, **list; char name[]; };
+            struct s { struct s *p; struct m *m; int n; double d[]; };
+int
+main (void)
+{
+int m = getchar ();
+            size_t nbytes = offsetof (struct s, d) + m * sizeof (double);
+            nbytes += sizeof (struct s) - 1;
+            nbytes -= nbytes % sizeof (struct s);
+            struct s *p = malloc (nbytes);
+            p->p = p;
+            p->m = NULL;
+            p->d[0] = 0.0;
+            return p->d != (double *) NULL;
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_c_try_compile "$LINENO"
+then :
+  ac_cv_c_flexmember=yes
+else $as_nop
+  ac_cv_c_flexmember=no
+fi
+rm -f core conftest.err conftest.$ac_objext conftest.beam conftest.$ac_ext
+fi
+{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: $ac_cv_c_flexmember" >&5
+printf "%s\n" "$ac_cv_c_flexmember" >&6; }
+  if test $ac_cv_c_flexmember = yes; then
+
+printf "%s\n" "#define FLEXIBLE_ARRAY_MEMBER /**/" >>confdefs.h
+
+  else
+    printf "%s\n" "#define FLEXIBLE_ARRAY_MEMBER 1" >>confdefs.h
+
+  fi
+
 { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for inline" >&5
 printf %s "checking for inline... " >&6; }
 if test ${ac_cv_c_inline+y}
@@ -17808,6 +17875,39 @@ case $ac_cv_c_inline in
 _ACEOF
     ;;
 esac
+
+
+  { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking whether ctype.h defines __header_inline" >&5
+printf %s "checking whether ctype.h defines __header_inline... " >&6; }
+if test ${gl_cv_have___header_inline+y}
+then :
+  printf %s "(cached) " >&6
+else $as_nop
+  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+#include <ctype.h>
+                         #ifndef __header_inline
+                          #error "<ctype.h> does not define __header_inline"
+                         #endif
+
+_ACEOF
+if ac_fn_c_try_cpp "$LINENO"
+then :
+  gl_cv_have___header_inline=yes
+else $as_nop
+  gl_cv_have___header_inline=no
+fi
+rm -f conftest.err conftest.i conftest.$ac_ext
+fi
+{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: $gl_cv_have___header_inline" >&5
+printf "%s\n" "$gl_cv_have___header_inline" >&6; }
+  if test "$gl_cv_have___header_inline" = yes; then
+
+printf "%s\n" "#define HAVE___HEADER_INLINE 1" >>confdefs.h
+
+  fi
+
+
 
 
 ac_config_headers="$ac_config_headers config.h:configh.in"

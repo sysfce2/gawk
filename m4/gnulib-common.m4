@@ -1,433 +1,42 @@
-/* configh.in.  Generated from configure.ac by autoheader.  */
+# Stripped-down version of gnulib/m4/gnulib-common.m4, for Gawk.
+dnl Copyright (C) 2007-2023 Free Software Foundation, Inc.
+dnl This file is free software; the Free Software Foundation
+dnl gives unlimited permission to copy and/or distribute it,
+dnl with or without modifications, as long as this notice is preserved.
 
-/* Witness that <config.h> has been included.  */
+# This could simply be a copy of gnulib/m4/gnulib-common.m4.
+# However, it has been simplified for Gawk to make it easier to review.
+
+AC_DEFUN([gl_COMMON], [
+  dnl Use AC_REQUIRE here, so that the code is expanded once only.
+  AC_REQUIRE([gl_COMMON_BODY])
+])
+AC_DEFUN([gl_COMMON_BODY], [
+  AH_VERBATIM([0witness],
+[/* Witness that <config.h> has been included.  */
 #define _GL_CONFIG_H_INCLUDED 1
-
-
-/* the name of the file descriptor member of DIR */
-#undef DIR_FD_MEMBER_NAME
-
-#ifdef DIR_FD_MEMBER_NAME
-# define DIR_TO_FD(Dir_p) ((Dir_p)->DIR_FD_MEMBER_NAME)
-#else
-# define DIR_TO_FD(Dir_p) -1
-#endif
-
-
-/* Define to 1 if translation of program messages to the user's native
-   language is requested. */
-#undef ENABLE_NLS
-
-/* Define to nothing if C supports flexible array members, and to 1 if it does
-   not. That way, with a declaration like 'struct s { int n; short
-   d[FLEXIBLE_ARRAY_MEMBER]; };', the struct hack can be used with pre-C99
-   compilers. Use 'FLEXSIZEOF (struct s, d, N * sizeof (short))' to calculate
-   the size in bytes of such a struct containing an N-element array. */
-#undef FLEXIBLE_ARRAY_MEMBER
-
-/* Define to 1 if you have the `atexit' function. */
-#undef HAVE_ATEXIT
-
-/* Define to 1 if you have the Mac OS X function
-   CFLocaleCopyPreferredLanguages in the CoreFoundation framework. */
-#undef HAVE_CFLOCALECOPYPREFERREDLANGUAGES
-
-/* Define to 1 if you have the Mac OS X function CFPreferencesCopyAppValue in
-   the CoreFoundation framework. */
-#undef HAVE_CFPREFERENCESCOPYAPPVALUE
-
-/* Define if the GNU dcgettext() function is already present or preinstalled.
-   */
-#undef HAVE_DCGETTEXT
-
-/* Define to 1 if you have the declaration of `dirfd', and to 0 if you don't.
-   */
-#undef HAVE_DECL_DIRFD
-
-/* Define to 1 if you have the <dirent.h> header file, and it defines `DIR'.
-   */
-#undef HAVE_DIRENT_H
-
-/* Define to 1 if you have the `dirfd' function. */
-#undef HAVE_DIRFD
-
-/* Define to 1 if you have the <dlfcn.h> header file. */
-#undef HAVE_DLFCN_H
-
-/* Define to 1 if you have the `fdopendir' function. */
-#undef HAVE_FDOPENDIR
-
-/* Define to 1 if you have the `fmod' function. */
-#undef HAVE_FMOD
-
-/* Define to 1 if you have the `fnmatch' function. */
-#undef HAVE_FNMATCH
-
-/* Define to 1 if you have the <fnmatch.h> header file. */
-#undef HAVE_FNMATCH_H
-
-/* Define to 1 if you have the `getdtablesize' function. */
-#undef HAVE_GETDTABLESIZE
-
-/* Define to 1 if you have the `GetSystemTimeAsFileTime' function. */
-#undef HAVE_GETSYSTEMTIMEASFILETIME
-
-/* Define if the GNU gettext() function is already present or preinstalled. */
-#undef HAVE_GETTEXT
-
-/* Define to 1 if you have the `gettimeofday' function. */
-#undef HAVE_GETTIMEOFDAY
-
-/* Define if you have the iconv() function and it works. */
-#undef HAVE_ICONV
-
-/* Define to 1 if you have the <inttypes.h> header file. */
-#undef HAVE_INTTYPES_H
-
-/* Define if you have <langinfo.h> and nl_langinfo(CODESET). */
-#undef HAVE_LANGINFO_CODESET
-
-/* Define if your <locale.h> file defines LC_MESSAGES. */
-#undef HAVE_LC_MESSAGES
-
-/* Define to 1 if you have the <limits.h> header file. */
-#undef HAVE_LIMITS_H
-
-/* Define to 1 if you have the <minix/config.h> header file. */
-#undef HAVE_MINIX_CONFIG_H
-
-/* Define to 1 if you have the `mmap' function. */
-#undef HAVE_MMAP
-
-/* Define to 1 if you have fully functional mpfr and gmp libraries. */
-#undef HAVE_MPFR
-
-/* Define to 1 if you have the `munmap' function. */
-#undef HAVE_MUNMAP
-
-/* Define to 1 if you have the `nanosleep' function. */
-#undef HAVE_NANOSLEEP
-
-/* Define to 1 if you have the <ndir.h> header file, and it defines `DIR'. */
-#undef HAVE_NDIR_H
-
-/* Define to 1 if you have the `select' function. */
-#undef HAVE_SELECT
-
-/* Define to 1 if you have the `statvfs' function. */
-#undef HAVE_STATVFS
-
-/* Define to 1 if you have the <stdint.h> header file. */
-#undef HAVE_STDINT_H
-
-/* Define to 1 if you have the <stdio.h> header file. */
-#undef HAVE_STDIO_H
-
-/* Define to 1 if you have the <stdlib.h> header file. */
-#undef HAVE_STDLIB_H
-
-/* Define to 1 if you have the <strings.h> header file. */
-#undef HAVE_STRINGS_H
-
-/* Define to 1 if you have the <string.h> header file. */
-#undef HAVE_STRING_H
-
-/* Define to 1 if you have the `strptime' function. */
-#undef HAVE_STRPTIME
-
-/* Define to 1 if `st_blksize' is a member of `struct stat'. */
-#undef HAVE_STRUCT_STAT_ST_BLKSIZE
-
-/* Define to 1 if you have the <sys/dir.h> header file, and it defines `DIR'.
-   */
-#undef HAVE_SYS_DIR_H
-
-/* Define to 1 if you have the <sys/mkdev.h> header file. */
-#undef HAVE_SYS_MKDEV_H
-
-/* Define to 1 if you have the <sys/ndir.h> header file, and it defines `DIR'.
-   */
-#undef HAVE_SYS_NDIR_H
-
-/* Define to 1 if you have the <sys/param.h> header file. */
-#undef HAVE_SYS_PARAM_H
-
-/* Define to 1 if you have the <sys/select.h> header file. */
-#undef HAVE_SYS_SELECT_H
-
-/* Define to 1 if you have the <sys/statvfs.h> header file. */
-#undef HAVE_SYS_STATVFS_H
-
-/* Define to 1 if you have the <sys/stat.h> header file. */
-#undef HAVE_SYS_STAT_H
-
-/* Define to 1 if you have the <sys/sysmacros.h> header file. */
-#undef HAVE_SYS_SYSMACROS_H
-
-/* Define to 1 if you have the <sys/time.h> header file. */
-#undef HAVE_SYS_TIME_H
-
-/* Define to 1 if you have the <sys/types.h> header file. */
-#undef HAVE_SYS_TYPES_H
-
-/* Define to 1 if you have the <unistd.h> header file. */
-#undef HAVE_UNISTD_H
-
-/* Define to 1 if you have the <wchar.h> header file. */
-#undef HAVE_WCHAR_H
-
-/* Define to 1 if ctype.h defines __header_inline. */
-#undef HAVE___HEADER_INLINE
-
-/* Please see the Gnulib manual for how to use these macros.
-
-   Suppress extern inline with HP-UX cc, as it appears to be broken; see
-   <https://lists.gnu.org/r/bug-texinfo/2013-02/msg00030.html>.
-
-   Suppress extern inline with Sun C in standards-conformance mode, as it
-   mishandles inline functions that call each other.  E.g., for 'inline void f
-   (void) { } inline void g (void) { f (); }', c99 incorrectly complains
-   'reference to static identifier "f" in extern inline function'.
-   This bug was observed with Oracle Developer Studio 12.6
-   (Sun C 5.15 SunOS_sparc 2017/05/30).
-
-   Suppress extern inline (with or without __attribute__ ((__gnu_inline__)))
-   on configurations that mistakenly use 'static inline' to implement
-   functions or macros in standard C headers like <ctype.h>.  For example,
-   if isdigit is mistakenly implemented via a static inline function,
-   a program containing an extern inline function that calls isdigit
-   may not work since the C standard prohibits extern inline functions
-   from calling static functions (ISO C 99 section 6.7.4.(3).
-   This bug is known to occur on:
-
-     OS X 10.8 and earlier; see:
-     https://lists.gnu.org/r/bug-gnulib/2012-12/msg00023.html
-
-     DragonFly; see
-     http://muscles.dragonflybsd.org/bulk/clang-master-potential/20141111_102002/logs/ah-tty-0.3.12.log
-
-     FreeBSD; see:
-     https://lists.gnu.org/r/bug-gnulib/2014-07/msg00104.html
-
-   OS X 10.9 has a macro __header_inline indicating the bug is fixed for C and
-   for clang but remains for g++; see <https://trac.macports.org/ticket/41033>.
-   Assume DragonFly and FreeBSD will be similar.
-
-   GCC 4.3 and above with -std=c99 or -std=gnu99 implements ISO C99
-   inline semantics, unless -fgnu89-inline is used.  It defines a macro
-   __GNUC_STDC_INLINE__ to indicate this situation or a macro
-   __GNUC_GNU_INLINE__ to indicate the opposite situation.
-   GCC 4.2 with -std=c99 or -std=gnu99 implements the GNU C inline
-   semantics but warns, unless -fgnu89-inline is used:
-     warning: C99 inline functions are not supported; using GNU89
-     warning: to disable this warning use -fgnu89-inline or the gnu_inline function attribute
-   It defines a macro __GNUC_GNU_INLINE__ to indicate this situation.
- */
-#if (((defined __APPLE__ && defined __MACH__) \
-      || defined __DragonFly__ || defined __FreeBSD__) \
-     && (defined HAVE___HEADER_INLINE \
-         ? (defined __cplusplus && defined __GNUC_STDC_INLINE__ \
-            && ! defined __clang__) \
-         : ((! defined _DONT_USE_CTYPE_INLINE_ \
-             && (defined __GNUC__ || defined __cplusplus)) \
-            || (defined _FORTIFY_SOURCE && 0 < _FORTIFY_SOURCE \
-                && defined __GNUC__ && ! defined __cplusplus))))
-# define _GL_EXTERN_INLINE_STDHEADER_BUG
-#endif
-#if ((__GNUC__ \
-      ? (defined __GNUC_STDC_INLINE__ && __GNUC_STDC_INLINE__ \
-         && !defined __PCC__) \
-      : (199901L <= __STDC_VERSION__ \
-         && !defined __HP_cc \
-         && !defined __PGI \
-         && !(defined __SUNPRO_C && __STDC__))) \
-     && !defined _GL_EXTERN_INLINE_STDHEADER_BUG)
-# define _GL_INLINE inline
-# define _GL_EXTERN_INLINE extern inline
-# define _GL_EXTERN_INLINE_IN_USE
-#elif (2 < __GNUC__ + (7 <= __GNUC_MINOR__) && !defined __STRICT_ANSI__ \
-       && !defined __PCC__ \
-       && !defined _GL_EXTERN_INLINE_STDHEADER_BUG)
-# if defined __GNUC_GNU_INLINE__ && __GNUC_GNU_INLINE__
-   /* __gnu_inline__ suppresses a GCC 4.2 diagnostic.  */
-#  define _GL_INLINE extern inline __attribute__ ((__gnu_inline__))
-# else
-#  define _GL_INLINE extern inline
-# endif
-# define _GL_EXTERN_INLINE extern
-# define _GL_EXTERN_INLINE_IN_USE
-#else
-# define _GL_INLINE _GL_UNUSED static
-# define _GL_EXTERN_INLINE _GL_UNUSED static
-#endif
-
-/* In GCC 4.6 (inclusive) to 5.1 (exclusive),
-   suppress bogus "no previous prototype for 'FOO'"
-   and "no previous declaration for 'FOO'" diagnostics,
-   when FOO is an inline function in the header; see
-   <https://gcc.gnu.org/bugzilla/show_bug.cgi?id=54113> and
-   <https://gcc.gnu.org/bugzilla/show_bug.cgi?id=63877>.  */
-#if __GNUC__ == 4 && 6 <= __GNUC_MINOR__
-# if defined __GNUC_STDC_INLINE__ && __GNUC_STDC_INLINE__
-#  define _GL_INLINE_HEADER_CONST_PRAGMA
-# else
-#  define _GL_INLINE_HEADER_CONST_PRAGMA \
-     _Pragma ("GCC diagnostic ignored \"-Wsuggest-attribute=const\"")
-# endif
-# define _GL_INLINE_HEADER_BEGIN \
-    _Pragma ("GCC diagnostic push") \
-    _Pragma ("GCC diagnostic ignored \"-Wmissing-prototypes\"") \
-    _Pragma ("GCC diagnostic ignored \"-Wmissing-declarations\"") \
-    _GL_INLINE_HEADER_CONST_PRAGMA
-# define _GL_INLINE_HEADER_END \
-    _Pragma ("GCC diagnostic pop")
-#else
-# define _GL_INLINE_HEADER_BEGIN
-# define _GL_INLINE_HEADER_END
-#endif
-
-/* Define to the sub-directory where libtool stores uninstalled libraries. */
-#undef LT_OBJDIR
-
-/* Name of package */
-#undef PACKAGE
-
-/* Define to the address where bug reports for this package should be sent. */
-#undef PACKAGE_BUGREPORT
-
-/* Define to the full name of this package. */
-#undef PACKAGE_NAME
-
-/* Define to the full name and version of this package. */
-#undef PACKAGE_STRING
-
-/* Define to the one symbol short name of this package. */
-#undef PACKAGE_TARNAME
-
-/* Define to the home page for this package. */
-#undef PACKAGE_URL
-
-/* Define to the version of this package. */
-#undef PACKAGE_VERSION
-
-/* The size of `void *', as computed by sizeof. */
-#undef SIZEOF_VOID_P
-
-/* Define to 1 if all of the C90 standard headers exist (not just the ones
-   required in a freestanding environment). This macro is provided for
-   backward compatibility; new code need not use it. */
-#undef STDC_HEADERS
-
-/* Define to 1 if we can use the pma allocator */
-#undef USE_PERSISTENT_MALLOC
-
-/* Enable extensions on AIX 3, Interix.  */
-#ifndef _ALL_SOURCE
-# undef _ALL_SOURCE
-#endif
-/* Enable general extensions on macOS.  */
-#ifndef _DARWIN_C_SOURCE
-# undef _DARWIN_C_SOURCE
-#endif
-/* Enable general extensions on Solaris.  */
-#ifndef __EXTENSIONS__
-# undef __EXTENSIONS__
-#endif
-/* Enable GNU extensions on systems that have them.  */
-#ifndef _GNU_SOURCE
-# undef _GNU_SOURCE
-#endif
-/* Enable X/Open compliant socket functions that do not require linking
-   with -lxnet on HP-UX 11.11.  */
-#ifndef _HPUX_ALT_XOPEN_SOCKET_API
-# undef _HPUX_ALT_XOPEN_SOCKET_API
-#endif
-/* Identify the host operating system as Minix.
-   This macro does not affect the system headers' behavior.
-   A future release of Autoconf may stop defining this macro.  */
-#ifndef _MINIX
-# undef _MINIX
-#endif
-/* Enable general extensions on NetBSD.
-   Enable NetBSD compatibility extensions on Minix.  */
-#ifndef _NETBSD_SOURCE
-# undef _NETBSD_SOURCE
-#endif
-/* Enable OpenBSD compatibility extensions on NetBSD.
-   Oddly enough, this does nothing on OpenBSD.  */
-#ifndef _OPENBSD_SOURCE
-# undef _OPENBSD_SOURCE
-#endif
-/* Define to 1 if needed for POSIX-compatible behavior.  */
-#ifndef _POSIX_SOURCE
-# undef _POSIX_SOURCE
-#endif
-/* Define to 2 if needed for POSIX-compatible behavior.  */
-#ifndef _POSIX_1_SOURCE
-# undef _POSIX_1_SOURCE
-#endif
-/* Enable POSIX-compatible threading on Solaris.  */
-#ifndef _POSIX_PTHREAD_SEMANTICS
-# undef _POSIX_PTHREAD_SEMANTICS
-#endif
-/* Enable extensions specified by ISO/IEC TS 18661-5:2014.  */
-#ifndef __STDC_WANT_IEC_60559_ATTRIBS_EXT__
-# undef __STDC_WANT_IEC_60559_ATTRIBS_EXT__
-#endif
-/* Enable extensions specified by ISO/IEC TS 18661-1:2014.  */
-#ifndef __STDC_WANT_IEC_60559_BFP_EXT__
-# undef __STDC_WANT_IEC_60559_BFP_EXT__
-#endif
-/* Enable extensions specified by ISO/IEC TS 18661-2:2015.  */
-#ifndef __STDC_WANT_IEC_60559_DFP_EXT__
-# undef __STDC_WANT_IEC_60559_DFP_EXT__
-#endif
-/* Enable extensions specified by ISO/IEC TS 18661-4:2015.  */
-#ifndef __STDC_WANT_IEC_60559_FUNCS_EXT__
-# undef __STDC_WANT_IEC_60559_FUNCS_EXT__
-#endif
-/* Enable extensions specified by ISO/IEC TS 18661-3:2015.  */
-#ifndef __STDC_WANT_IEC_60559_TYPES_EXT__
-# undef __STDC_WANT_IEC_60559_TYPES_EXT__
-#endif
-/* Enable extensions specified by ISO/IEC TR 24731-2:2010.  */
-#ifndef __STDC_WANT_LIB_EXT2__
-# undef __STDC_WANT_LIB_EXT2__
-#endif
-/* Enable extensions specified by ISO/IEC 24747:2009.  */
-#ifndef __STDC_WANT_MATH_SPEC_FUNCS__
-# undef __STDC_WANT_MATH_SPEC_FUNCS__
-#endif
-/* Enable extensions on HP NonStop.  */
-#ifndef _TANDEM_SOURCE
-# undef _TANDEM_SOURCE
-#endif
-/* Enable X/Open extensions.  Define to 500 only if necessary
-   to make mbstate_t available.  */
-#ifndef _XOPEN_SOURCE
-# undef _XOPEN_SOURCE
-#endif
-
-
-/* Version number of package */
-#undef VERSION
-
-/* Number of bits in a file offset, on hosts where this is settable. */
-#undef _FILE_OFFSET_BITS
-
-/* True if the compiler says it groks GNU C version MAJOR.MINOR.  */
+])
+  AH_VERBATIM([_GL_GNUC_PREREQ],
+[/* True if the compiler says it groks GNU C version MAJOR.MINOR.  */
 #if defined __GNUC__ && defined __GNUC_MINOR__
 # define _GL_GNUC_PREREQ(major, minor) \
     ((major) < __GNUC__ + ((minor) <= __GNUC_MINOR__))
 #else
 # define _GL_GNUC_PREREQ(major, minor) 0
 #endif
-
-
-/* Define for large files, on AIX-style hosts. */
-#undef _LARGE_FILES
-
-/* Attributes.  */
+])
+  AH_VERBATIM([isoc99_inline],
+[/* Work around a bug in Apple GCC 4.0.1 build 5465: In C99 mode, it supports
+   the ISO C 99 semantics of 'extern inline' (unlike the GNU C semantics of
+   earlier versions), but does not display it by setting __GNUC_STDC_INLINE__.
+   __APPLE__ && __MACH__ test for Mac OS X.
+   __APPLE_CC__ tests for the Apple compiler and its version.
+   __STDC_VERSION__ tests for the C99 mode.  */
+#if defined __APPLE__ && defined __MACH__ && __APPLE_CC__ >= 5465 && !defined __cplusplus && __STDC_VERSION__ >= 199901L && !defined __GNUC_STDC_INLINE__
+# define __GNUC_STDC_INLINE__ 1
+#endif])
+  AH_VERBATIM([attribute],
+[/* Attributes.  */
 #if (defined __has_attribute \
      && (!defined __clang_minor__ \
          || (defined __apple_build_version__ \
@@ -486,7 +95,8 @@
 #  define _GL_BRACKET_BEFORE_ATTRIBUTE 1
 # endif
 #endif
-
+]dnl There is no _GL_ATTRIBUTE_ALIGNED; use stdalign's alignas instead.
+[
 /* _GL_ATTRIBUTE_ALLOC_SIZE ((N)) declares that the Nth argument of the function
    is the size of the returned memory block.
    _GL_ATTRIBUTE_ALLOC_SIZE ((M, N)) declares that the Mth argument multiplied
@@ -887,7 +497,8 @@
 # endif
 #endif
 
-
+]dnl There is no _GL_ATTRIBUTE_VISIBILITY; see m4/visibility.m4 instead.
+[
 /* _GL_UNUSED_LABEL; declares that it is not a programming mistake if the
    immediately preceding label is not used.  The compiler should not warn
    if the label is not used.  */
@@ -901,22 +512,81 @@
 #  define _GL_UNUSED_LABEL
 # endif
 #endif
+])
+])
 
+# gl_MODULE_INDICATOR_CONDITION
+# expands to a C preprocessor expression that evaluates to 1 or 0, depending
+# whether a gnulib module that has been requested shall be considered present
+# or not.
+m4_define([gl_MODULE_INDICATOR_CONDITION], [1])
 
-/* Define to `__inline__' or `__inline' if that's what the C compiler
-   calls it, or to nothing if 'inline' is not supported under any name.  */
-#ifndef __cplusplus
-#undef inline
-#endif
+# gl_MODULE_INDICATOR([modulename])
+# defines a C macro indicating the presence of the given module
+# in a location where it can be used.
+#                                             |  Value  |   Value   |
+#                                             | in lib/ | in tests/ |
+# --------------------------------------------+---------+-----------+
+# Module present among main modules:          |    1    |     1     |
+# --------------------------------------------+---------+-----------+
+# Module present among tests-related modules: |    0    |     1     |
+# --------------------------------------------+---------+-----------+
+# Module not present at all:                  |    0    |     0     |
+# --------------------------------------------+---------+-----------+
+AC_DEFUN([gl_MODULE_INDICATOR],
+[
+  AC_DEFINE_UNQUOTED([GNULIB_]m4_translit([[$1]],
+      [abcdefghijklmnopqrstuvwxyz./-],
+      [ABCDEFGHIJKLMNOPQRSTUVWXYZ___]),
+    [gl_MODULE_INDICATOR_CONDITION],
+    [Define to a C preprocessor expression that evaluates to 1 or 0,
+     depending whether the gnulib module $1 shall be considered present.])
+])
 
-/* Work around a bug in Apple GCC 4.0.1 build 5465: In C99 mode, it supports
-   the ISO C 99 semantics of 'extern inline' (unlike the GNU C semantics of
-   earlier versions), but does not display it by setting __GNUC_STDC_INLINE__.
-   __APPLE__ && __MACH__ test for Mac OS X.
-   __APPLE_CC__ tests for the Apple compiler and its version.
-   __STDC_VERSION__ tests for the C99 mode.  */
-#if defined __APPLE__ && defined __MACH__ && __APPLE_CC__ >= 5465 && !defined __cplusplus && __STDC_VERSION__ >= 199901L && !defined __GNUC_STDC_INLINE__
-# define __GNUC_STDC_INLINE__ 1
-#endif
+# gl_CONDITIONAL(conditional, condition)
+# is like AM_CONDITIONAL(conditional, condition), except that it does not
+# produce an error
+#   configure: error: conditional "..." was never defined.
+#   Usually this means the macro was only invoked conditionally.
+# when only invoked conditionally. Instead, in that case, both the _TRUE
+# and the _FALSE case are disabled.
+AC_DEFUN([gl_CONDITIONAL],
+[
+  pushdef([AC_CONFIG_COMMANDS_PRE], [:])dnl
+  AM_CONDITIONAL([$1], [$2])
+  popdef([AC_CONFIG_COMMANDS_PRE])dnl
+  if test -z "${[$1]_TRUE}" && test -z "${[$1]_FALSE}"; then
+    [$1]_TRUE='#'
+    [$1]_FALSE='#'
+  fi
+])
 
-#include "ext_custom.h"
+dnl gl_CONDITIONAL_HEADER([foo.h])
+dnl takes a shell variable GL_GENERATE_FOO_H (with value true or false) as input
+dnl and produces
+dnl   - an AC_SUBSTed variable FOO_H that is either a file name or empty, based
+dnl     on whether GL_GENERATE_FOO_H is true or false,
+dnl   - an Automake conditional GL_GENERATE_FOO_H that evaluates to the value of
+dnl     the shell variable GL_GENERATE_FOO_H.
+AC_DEFUN([gl_CONDITIONAL_HEADER],
+[
+  m4_pushdef([gl_header_name], AS_TR_SH(m4_toupper($1)))
+  m4_pushdef([gl_generate_var], [GL_GENERATE_]AS_TR_SH(m4_toupper($1)))
+  m4_pushdef([gl_generate_cond], [GL_GENERATE_]AS_TR_SH(m4_toupper($1)))
+  case "$gl_generate_var" in
+    false) gl_header_name='' ;;
+    true)
+      dnl It is OK to use a .h file in lib/ from within tests/, but not vice
+      dnl versa.
+      if test -z "$gl_header_name"; then
+        gl_header_name="${gl_source_base_prefix}$1"
+      fi
+      ;;
+    *) echo "*** gl_generate_var is not set correctly" 1>&2; exit 1 ;;
+  esac
+  AC_SUBST(gl_header_name)
+  gl_CONDITIONAL(gl_generate_cond, [$gl_generate_var])
+  m4_popdef([gl_generate_cond])
+  m4_popdef([gl_generate_var])
+  m4_popdef([gl_header_name])
+])

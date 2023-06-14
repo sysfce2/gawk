@@ -112,6 +112,10 @@ extern void _exit(int);
 
 /* prototypes for missing functions defined in missing_d/ */
 
+#ifndef HAVE_REALLOCARRAY
+extern void *reallocarray(void *, size_t, size_t);
+#endif
+
 #ifndef HAVE_STRNCASECMP
 extern int strcasecmp(const char *s1, const char *s2);
 extern int strncasecmp(const char *s1, const char *s2, register size_t n);
@@ -149,4 +153,3 @@ extern int unsetenv(const char *);
 #if !defined(HAVE_STRCOLL)
 extern int strcoll(const char *, const char *);
 #endif
-

@@ -32,6 +32,9 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA
  */
 
+#ifndef CUSTOM_H
+#define CUSTOM_H
+
 /* for VMS POSIX, from Pat Rankin, r.pat.rankin@gmail.com */
 #ifdef VMS_POSIX
 #undef VMS
@@ -117,12 +120,6 @@ typedef unsigned long long uint_fast64_t;
 #else
 # define _GL_ATTRIBUTE_PURE /* empty */
 #endif
-#define FLEXIBLE_ARRAY_MEMBER	1
-#define xreallocarray xnrealloc
-#define xizalloc xzalloc
-#define xicalloc xcalloc
-#define xirealloc xrealloc
-#define ximalloc xmalloc
 
 #ifdef USE_PERSISTENT_MALLOC
 #include <stdlib.h>
@@ -141,3 +138,5 @@ typedef unsigned long long uint_fast64_t;
 #ifndef HAVE_STRSIGNAL
 char * strsignal(int signal);
 #endif /* ! HAVE_STRSIGNAL */
+
+#endif /* CUSTOM_H */

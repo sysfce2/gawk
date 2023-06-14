@@ -12,9 +12,10 @@ AC_CHECK_SIZEOF([void *])
 use_persistent_malloc=no
 if test "$SKIP_PERSIST_MALLOC" = no && test $ac_cv_sizeof_void_p -eq 8
 then
-	AC_CHECK_FUNC([mmap])
-	AC_CHECK_FUNC([munmap])
-	if test $ac_cv_func_mmap = yes && test $ac_cv_func_munmap = yes
+	AC_CHECK_FUNCS([mmap munmap atexit])
+	if test $ac_cv_func_mmap = yes &&
+	   test $ac_cv_func_munmap = yes &&
+	   test $ac_cv_func_atexit = yes
 	then
 		use_persistent_malloc=yes
 		case $host_os in

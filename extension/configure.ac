@@ -104,6 +104,7 @@ fi
 AC_CHECK_HEADERS(fnmatch.h limits.h sys/mkdev.h sys/param.h sys/select.h \
 		sys/statvfs.h sys/sysmacros.h sys/time.h)
 
+gl_COMMON
 AC_HEADER_DIRENT
 AC_CHECK_HEADERS_ONCE([sys/time.h])
 
@@ -129,7 +130,9 @@ GAWK_FUNC_DIRFD
 GAWK_PREREQ_DIRFD
 
 dnl checks for compiler characteristics
+AC_C_FLEXIBLE_ARRAY_MEMBER
 AC_C_INLINE
+gl_EXTERN_INLINE
 
 AC_CONFIG_HEADERS([config.h:configh.in])
 AH_BOTTOM([#include "ext_custom.h"])

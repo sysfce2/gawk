@@ -663,6 +663,23 @@ ENABLE_EXTENSIONS_FALSE
 ENABLE_EXTENSIONS_TRUE
 USE_PERSISTENT_MALLOC_FALSE
 USE_PERSISTENT_MALLOC_TRUE
+GL_GENERATE_STDCKDINT_H_FALSE
+GL_GENERATE_STDCKDINT_H_TRUE
+STDCKDINT_H
+GL_GENERATE_LIMITS_H_FALSE
+GL_GENERATE_LIMITS_H_TRUE
+LIMITS_H
+NEXT_AS_FIRST_DIRECTIVE_LIMITS_H
+NEXT_LIMITS_H
+GL_GENERATE_ASSERT_H_FALSE
+GL_GENERATE_ASSERT_H_TRUE
+ASSERT_H
+NEXT_AS_FIRST_DIRECTIVE_ASSERT_H
+NEXT_ASSERT_H
+PRAGMA_COLUMNS
+PRAGMA_SYSTEM_HEADER
+INCLUDE_NEXT_AS_FIRST_DIRECTIVE
+INCLUDE_NEXT
 LIBSIGSEGV_PREFIX
 LTLIBSIGSEGV
 LIBSIGSEGV
@@ -2821,6 +2838,8 @@ gt_needs="$gt_needs "
 as_fn_append ac_header_c_list " stdbool.h stdbool_h HAVE_STDBOOL_H"
 as_fn_append ac_header_c_list " sys/time.h sys_time_h HAVE_SYS_TIME_H"
 as_fn_append ac_func_c_list " alarm HAVE_ALARM"
+as_fn_append ac_header_c_list " limits.h limits_h HAVE_LIMITS_H"
+as_fn_append ac_header_c_list " stdckdint.h stdckdint_h HAVE_STDCKDINT_H"
 
 # Auxiliary files required by this configure script.
 ac_aux_files="config.rpath ar-lib compile config.guess config.sub missing install-sh"
@@ -10373,6 +10392,24 @@ fi
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for bool, true, false" >&5
 printf %s "checking for bool, true, false... " >&6; }
 if test ${gl_cv_c_bool+y}
@@ -11640,6 +11677,12 @@ then :
     fi
 
 fi
+ac_fn_c_check_func "$LINENO" "reallocarray" "ac_cv_func_reallocarray"
+if test "x$ac_cv_func_reallocarray" = xyes
+then :
+  printf "%s\n" "#define HAVE_REALLOCARRAY 1" >>confdefs.h
+
+fi
 
   if test "X$additional_libdir2" = "X$additional_libdir"; then
     additional_libdir2=
@@ -12300,6 +12343,12 @@ then :
   printf "%s\n" "#define HAVE_POSIX_OPENPT 1" >>confdefs.h
 
 fi
+ac_fn_c_check_func "$LINENO" "reallocarray" "ac_cv_func_reallocarray"
+if test "x$ac_cv_func_reallocarray" = xyes
+then :
+  printf "%s\n" "#define HAVE_REALLOCARRAY 1" >>confdefs.h
+
+fi
 ac_fn_c_check_func "$LINENO" "setenv" "ac_cv_func_setenv"
 if test "x$ac_cv_func_setenv" = xyes
 then :
@@ -12491,6 +12540,1040 @@ printf "%s\n" "#define HAVE_MBRTOWC 1" >>confdefs.h
   fi
 
 
+
+# The following is taken from gnulib/modules/assert-h:
+
+
+  { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking whether the preprocessor supports include_next" >&5
+printf %s "checking whether the preprocessor supports include_next... " >&6; }
+if test ${gl_cv_have_include_next+y}
+then :
+  printf %s "(cached) " >&6
+else $as_nop
+  rm -rf conftestd1a conftestd1b conftestd2
+     mkdir conftestd1a conftestd1b conftestd2
+                                                  cat <<EOF > conftestd1a/conftest.h
+#define DEFINED_IN_CONFTESTD1
+#include_next <conftest.h>
+#ifdef DEFINED_IN_CONFTESTD2
+int foo;
+#else
+#error "include_next doesn't work"
+#endif
+EOF
+     cat <<EOF > conftestd1b/conftest.h
+#define DEFINED_IN_CONFTESTD1
+#include <stdio.h>
+#include_next <conftest.h>
+#ifdef DEFINED_IN_CONFTESTD2
+int foo;
+#else
+#error "include_next doesn't work"
+#endif
+EOF
+     cat <<EOF > conftestd2/conftest.h
+#ifndef DEFINED_IN_CONFTESTD1
+#error "include_next test doesn't work"
+#endif
+#define DEFINED_IN_CONFTESTD2
+EOF
+     gl_save_CPPFLAGS="$CPPFLAGS"
+     CPPFLAGS="$gl_save_CPPFLAGS -Iconftestd1b -Iconftestd2"
+     cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+#include <conftest.h>
+_ACEOF
+if ac_fn_c_try_compile "$LINENO"
+then :
+  gl_cv_have_include_next=yes
+else $as_nop
+  CPPFLAGS="$gl_save_CPPFLAGS -Iconftestd1a -Iconftestd2"
+        cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+#include <conftest.h>
+_ACEOF
+if ac_fn_c_try_compile "$LINENO"
+then :
+  gl_cv_have_include_next=buggy
+else $as_nop
+  gl_cv_have_include_next=no
+fi
+rm -f core conftest.err conftest.$ac_objext conftest.beam conftest.$ac_ext
+
+fi
+rm -f core conftest.err conftest.$ac_objext conftest.beam conftest.$ac_ext
+     CPPFLAGS="$gl_save_CPPFLAGS"
+     rm -rf conftestd1a conftestd1b conftestd2
+
+fi
+{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: $gl_cv_have_include_next" >&5
+printf "%s\n" "$gl_cv_have_include_next" >&6; }
+  PRAGMA_SYSTEM_HEADER=
+  if test $gl_cv_have_include_next = yes; then
+    INCLUDE_NEXT=include_next
+    INCLUDE_NEXT_AS_FIRST_DIRECTIVE=include_next
+    if test -n "$GCC"; then
+      PRAGMA_SYSTEM_HEADER='#pragma GCC system_header'
+    fi
+  else
+    if test $gl_cv_have_include_next = buggy; then
+      INCLUDE_NEXT=include
+      INCLUDE_NEXT_AS_FIRST_DIRECTIVE=include_next
+    else
+      INCLUDE_NEXT=include
+      INCLUDE_NEXT_AS_FIRST_DIRECTIVE=include
+    fi
+  fi
+
+
+
+
+      { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking whether source code line length is unlimited" >&5
+printf %s "checking whether source code line length is unlimited... " >&6; }
+if test ${gl_cv_source_line_length_unlimited+y}
+then :
+  printf %s "(cached) " >&6
+else $as_nop
+  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+#ifdef __TANDEM
+choke me
+#endif
+
+_ACEOF
+if (eval "$ac_cpp conftest.$ac_ext") 2>&5 |
+  $EGREP "choke me" >/dev/null 2>&1
+then :
+  gl_cv_source_line_length_unlimited=no
+else $as_nop
+  gl_cv_source_line_length_unlimited=yes
+fi
+rm -rf conftest*
+
+
+fi
+{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: $gl_cv_source_line_length_unlimited" >&5
+printf "%s\n" "$gl_cv_source_line_length_unlimited" >&6; }
+  if test $gl_cv_source_line_length_unlimited = no; then
+    PRAGMA_COLUMNS="#pragma COLUMNS 10000"
+  else
+    PRAGMA_COLUMNS=
+  fi
+
+
+
+  { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for static_assert" >&5
+printf %s "checking for static_assert... " >&6; }
+if test ${gl_cv_static_assert+y}
+then :
+  printf %s "(cached) " >&6
+else $as_nop
+  gl_save_CFLAGS=$CFLAGS
+     for gl_working in "yes, a keyword" "yes, an <assert.h> macro"; do
+      case $gl_working in #(
+  *assert.h*) :
+    CFLAGS="$gl_save_CFLAGS -DINCLUDE_ASSERT_H" ;; #(
+  *) :
+     ;;
+esac
+
+      cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+#if defined __clang__ && __STDC_VERSION__ < 202311
+             #pragma clang diagnostic error "-Wc2x-extensions"
+             #pragma clang diagnostic error "-Wc++1z-extensions"
+            #endif
+            #ifdef INCLUDE_ASSERT_H
+             #include <assert.h>
+            #endif
+            static_assert (2 + 2 == 4, "arithmetic does not work");
+            static_assert (2 + 2 == 4);
+
+int
+main (void)
+{
+
+            static_assert (sizeof (char) == 1, "sizeof does not work");
+            static_assert (sizeof (char) == 1);
+
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_c_try_compile "$LINENO"
+then :
+  gl_cv_static_assert=$gl_working
+else $as_nop
+  gl_cv_static_assert=no
+fi
+rm -f core conftest.err conftest.$ac_objext conftest.beam conftest.$ac_ext
+      CFLAGS=$gl_save_CFLAGS
+      test "$gl_cv_static_assert" != no && break
+     done
+fi
+{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: $gl_cv_static_assert" >&5
+printf "%s\n" "$gl_cv_static_assert" >&6; }
+
+  GL_GENERATE_ASSERT_H=false
+  case $gl_cv_static_assert in #(
+  yes*keyword*) :
+
+printf "%s\n" "#define HAVE_C_STATIC_ASSERT 1" >>confdefs.h
+ ;; #(
+  no) :
+    GL_GENERATE_ASSERT_H=true
+
+
+
+
+
+
+
+
+     if test $gl_cv_have_include_next = yes; then
+       gl_cv_next_assert_h='<'assert.h'>'
+     else
+       { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking absolute name of <assert.h>" >&5
+printf %s "checking absolute name of <assert.h>... " >&6; }
+if test ${gl_cv_next_assert_h+y}
+then :
+  printf %s "(cached) " >&6
+else $as_nop
+
+
+
+  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+#include <assert.h>
+_ACEOF
+                case "$host_os" in
+    aix*) gl_absname_cpp="$ac_cpp -C" ;;
+    *)    gl_absname_cpp="$ac_cpp" ;;
+  esac
+
+  case "$host_os" in
+    mingw*)
+                                          gl_dirsep_regex='[/\\]'
+      ;;
+    *)
+      gl_dirsep_regex='\/'
+      ;;
+  esac
+      gl_make_literal_regex_sed='s,[]$^\\.*/[],\\&,g'
+  gl_header_literal_regex=`echo 'assert.h' \
+                           | sed -e "$gl_make_literal_regex_sed"`
+  gl_absolute_header_sed="/${gl_dirsep_regex}${gl_header_literal_regex}/"'{
+      s/.*"\(.*'"${gl_dirsep_regex}${gl_header_literal_regex}"'\)".*/\1/
+      s|^/[^/]|//&|
+      p
+      q
+    }'
+
+        gl_cv_absolute_assert_h=`(eval "$gl_absname_cpp conftest.$ac_ext") 2>&5 |
+  sed -n "$gl_absolute_header_sed"`
+
+          gl_header=$gl_cv_absolute_assert_h
+          gl_cv_next_assert_h='"'$gl_header'"'
+
+
+fi
+{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: $gl_cv_next_assert_h" >&5
+printf "%s\n" "$gl_cv_next_assert_h" >&6; }
+     fi
+     NEXT_ASSERT_H=$gl_cv_next_assert_h
+
+     if test $gl_cv_have_include_next = yes || test $gl_cv_have_include_next = buggy; then
+       # INCLUDE_NEXT_AS_FIRST_DIRECTIVE='include_next'
+       gl_next_as_first_directive='<'assert.h'>'
+     else
+       # INCLUDE_NEXT_AS_FIRST_DIRECTIVE='include'
+       gl_next_as_first_directive=$gl_cv_next_assert_h
+     fi
+     NEXT_AS_FIRST_DIRECTIVE_ASSERT_H=$gl_next_as_first_directive
+
+
+
+ ;; #(
+  *) :
+     ;;
+esac
+
+
+
+
+
+
+
+  case "$GL_GENERATE_ASSERT_H" in
+    false) ASSERT_H='' ;;
+    true)
+                  if test -z "$ASSERT_H"; then
+        ASSERT_H="${gl_source_base_prefix}assert.h"
+      fi
+      ;;
+    *) echo "*** GL_GENERATE_ASSERT_H is not set correctly" 1>&2; exit 1 ;;
+  esac
+
+
+     if $GL_GENERATE_ASSERT_H; then
+  GL_GENERATE_ASSERT_H_TRUE=
+  GL_GENERATE_ASSERT_H_FALSE='#'
+else
+  GL_GENERATE_ASSERT_H_TRUE='#'
+  GL_GENERATE_ASSERT_H_FALSE=
+fi
+:
+    if test -z "${GL_GENERATE_ASSERT_H_TRUE}" && test -z "${GL_GENERATE_ASSERT_H_FALSE}"; then
+    GL_GENERATE_ASSERT_H_TRUE='#'
+    GL_GENERATE_ASSERT_H_FALSE='#'
+  fi
+
+
+
+
+
+
+
+
+# The following is taken from gnulib/modules/limits-h:
+
+
+
+
+
+
+
+
+
+
+
+     if test $gl_cv_have_include_next = yes; then
+       gl_cv_next_limits_h='<'limits.h'>'
+     else
+       { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking absolute name of <limits.h>" >&5
+printf %s "checking absolute name of <limits.h>... " >&6; }
+if test ${gl_cv_next_limits_h+y}
+then :
+  printf %s "(cached) " >&6
+else $as_nop
+
+             if test $ac_cv_header_limits_h = yes; then
+
+
+
+
+  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+#include <limits.h>
+_ACEOF
+                case "$host_os" in
+    aix*) gl_absname_cpp="$ac_cpp -C" ;;
+    *)    gl_absname_cpp="$ac_cpp" ;;
+  esac
+
+  case "$host_os" in
+    mingw*)
+                                          gl_dirsep_regex='[/\\]'
+      ;;
+    *)
+      gl_dirsep_regex='\/'
+      ;;
+  esac
+      gl_make_literal_regex_sed='s,[]$^\\.*/[],\\&,g'
+  gl_header_literal_regex=`echo 'limits.h' \
+                           | sed -e "$gl_make_literal_regex_sed"`
+  gl_absolute_header_sed="/${gl_dirsep_regex}${gl_header_literal_regex}/"'{
+      s/.*"\(.*'"${gl_dirsep_regex}${gl_header_literal_regex}"'\)".*/\1/
+      s|^/[^/]|//&|
+      p
+      q
+    }'
+
+        gl_cv_absolute_limits_h=`(eval "$gl_absname_cpp conftest.$ac_ext") 2>&5 |
+  sed -n "$gl_absolute_header_sed"`
+
+          gl_header=$gl_cv_absolute_limits_h
+          gl_cv_next_limits_h='"'$gl_header'"'
+          else
+               gl_cv_next_limits_h='<'limits.h'>'
+             fi
+
+
+fi
+{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: $gl_cv_next_limits_h" >&5
+printf "%s\n" "$gl_cv_next_limits_h" >&6; }
+     fi
+     NEXT_LIMITS_H=$gl_cv_next_limits_h
+
+     if test $gl_cv_have_include_next = yes || test $gl_cv_have_include_next = buggy; then
+       # INCLUDE_NEXT_AS_FIRST_DIRECTIVE='include_next'
+       gl_next_as_first_directive='<'limits.h'>'
+     else
+       # INCLUDE_NEXT_AS_FIRST_DIRECTIVE='include'
+       gl_next_as_first_directive=$gl_cv_next_limits_h
+     fi
+     NEXT_AS_FIRST_DIRECTIVE_LIMITS_H=$gl_next_as_first_directive
+
+
+
+
+
+  { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking whether limits.h has WORD_BIT, BOOL_WIDTH etc." >&5
+printf %s "checking whether limits.h has WORD_BIT, BOOL_WIDTH etc.... " >&6; }
+if test ${gl_cv_header_limits_width+y}
+then :
+  printf %s "(cached) " >&6
+else $as_nop
+  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+#ifndef __STDC_WANT_IEC_60559_BFP_EXT__
+             #define __STDC_WANT_IEC_60559_BFP_EXT__ 1
+            #endif
+            #include <limits.h>
+            long long llm = LLONG_MAX;
+            int wb = WORD_BIT;
+            int ullw = ULLONG_WIDTH;
+            int bw = BOOL_WIDTH;
+            int bm = BOOL_MAX;
+            int mblm = MB_LEN_MAX;
+
+int
+main (void)
+{
+
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_c_try_compile "$LINENO"
+then :
+  gl_cv_header_limits_width=yes
+else $as_nop
+  gl_cv_header_limits_width=no
+fi
+rm -f core conftest.err conftest.$ac_objext conftest.beam conftest.$ac_ext
+fi
+{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: $gl_cv_header_limits_width" >&5
+printf "%s\n" "$gl_cv_header_limits_width" >&6; }
+  if test "$gl_cv_header_limits_width" = yes; then
+    GL_GENERATE_LIMITS_H=false
+  else
+    GL_GENERATE_LIMITS_H=true
+  fi
+
+
+
+
+
+  case "$GL_GENERATE_LIMITS_H" in
+    false) LIMITS_H='' ;;
+    true)
+                  if test -z "$LIMITS_H"; then
+        LIMITS_H="${gl_source_base_prefix}limits.h"
+      fi
+      ;;
+    *) echo "*** GL_GENERATE_LIMITS_H is not set correctly" 1>&2; exit 1 ;;
+  esac
+
+
+     if $GL_GENERATE_LIMITS_H; then
+  GL_GENERATE_LIMITS_H_TRUE=
+  GL_GENERATE_LIMITS_H_FALSE='#'
+else
+  GL_GENERATE_LIMITS_H_TRUE='#'
+  GL_GENERATE_LIMITS_H_FALSE=
+fi
+:
+    if test -z "${GL_GENERATE_LIMITS_H_TRUE}" && test -z "${GL_GENERATE_LIMITS_H_FALSE}"; then
+    GL_GENERATE_LIMITS_H_TRUE='#'
+    GL_GENERATE_LIMITS_H_FALSE='#'
+  fi
+
+
+
+
+
+
+
+
+# The following is taken from gnulib/modules/stdckdint:
+
+
+if test $ac_cv_header_stdckdint_h = yes; then
+  GL_GENERATE_STDCKDINT_H=false
+else
+  GL_GENERATE_STDCKDINT_H=true
+fi
+
+
+
+
+  case "$GL_GENERATE_STDCKDINT_H" in
+    false) STDCKDINT_H='' ;;
+    true)
+                  if test -z "$STDCKDINT_H"; then
+        STDCKDINT_H="${gl_source_base_prefix}stdckdint.h"
+      fi
+      ;;
+    *) echo "*** GL_GENERATE_STDCKDINT_H is not set correctly" 1>&2; exit 1 ;;
+  esac
+
+
+     if $GL_GENERATE_STDCKDINT_H; then
+  GL_GENERATE_STDCKDINT_H_TRUE=
+  GL_GENERATE_STDCKDINT_H_FALSE='#'
+else
+  GL_GENERATE_STDCKDINT_H_TRUE='#'
+  GL_GENERATE_STDCKDINT_H_FALSE=
+fi
+:
+    if test -z "${GL_GENERATE_STDCKDINT_H_TRUE}" && test -z "${GL_GENERATE_STDCKDINT_H_FALSE}"; then
+    GL_GENERATE_STDCKDINT_H_TRUE='#'
+    GL_GENERATE_STDCKDINT_H_FALSE='#'
+  fi
+
+
+
+
+
+
+
+
+# The following is taken from gnulib/modules/xalloc:
+:
+
+
+printf "%s\n" "#define GNULIB_XALLOC 1" >>confdefs.h
+
+
+
+
+# The following is taken from gnulib/modules/xalloc-die:
+
+
+printf "%s\n" "#define GNULIB_XALLOC_DIE 1" >>confdefs.h
+
+
+
+
+
+# The following is taken from gnulib/modules/assert-h:
+
+
+  { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking whether the preprocessor supports include_next" >&5
+printf %s "checking whether the preprocessor supports include_next... " >&6; }
+if test ${gl_cv_have_include_next+y}
+then :
+  printf %s "(cached) " >&6
+else $as_nop
+  rm -rf conftestd1a conftestd1b conftestd2
+     mkdir conftestd1a conftestd1b conftestd2
+                                                  cat <<EOF > conftestd1a/conftest.h
+#define DEFINED_IN_CONFTESTD1
+#include_next <conftest.h>
+#ifdef DEFINED_IN_CONFTESTD2
+int foo;
+#else
+#error "include_next doesn't work"
+#endif
+EOF
+     cat <<EOF > conftestd1b/conftest.h
+#define DEFINED_IN_CONFTESTD1
+#include <stdio.h>
+#include_next <conftest.h>
+#ifdef DEFINED_IN_CONFTESTD2
+int foo;
+#else
+#error "include_next doesn't work"
+#endif
+EOF
+     cat <<EOF > conftestd2/conftest.h
+#ifndef DEFINED_IN_CONFTESTD1
+#error "include_next test doesn't work"
+#endif
+#define DEFINED_IN_CONFTESTD2
+EOF
+     gl_save_CPPFLAGS="$CPPFLAGS"
+     CPPFLAGS="$gl_save_CPPFLAGS -Iconftestd1b -Iconftestd2"
+     cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+#include <conftest.h>
+_ACEOF
+if ac_fn_c_try_compile "$LINENO"
+then :
+  gl_cv_have_include_next=yes
+else $as_nop
+  CPPFLAGS="$gl_save_CPPFLAGS -Iconftestd1a -Iconftestd2"
+        cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+#include <conftest.h>
+_ACEOF
+if ac_fn_c_try_compile "$LINENO"
+then :
+  gl_cv_have_include_next=buggy
+else $as_nop
+  gl_cv_have_include_next=no
+fi
+rm -f core conftest.err conftest.$ac_objext conftest.beam conftest.$ac_ext
+
+fi
+rm -f core conftest.err conftest.$ac_objext conftest.beam conftest.$ac_ext
+     CPPFLAGS="$gl_save_CPPFLAGS"
+     rm -rf conftestd1a conftestd1b conftestd2
+
+fi
+{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: $gl_cv_have_include_next" >&5
+printf "%s\n" "$gl_cv_have_include_next" >&6; }
+  PRAGMA_SYSTEM_HEADER=
+  if test $gl_cv_have_include_next = yes; then
+    INCLUDE_NEXT=include_next
+    INCLUDE_NEXT_AS_FIRST_DIRECTIVE=include_next
+    if test -n "$GCC"; then
+      PRAGMA_SYSTEM_HEADER='#pragma GCC system_header'
+    fi
+  else
+    if test $gl_cv_have_include_next = buggy; then
+      INCLUDE_NEXT=include
+      INCLUDE_NEXT_AS_FIRST_DIRECTIVE=include_next
+    else
+      INCLUDE_NEXT=include
+      INCLUDE_NEXT_AS_FIRST_DIRECTIVE=include
+    fi
+  fi
+
+
+
+
+      { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking whether source code line length is unlimited" >&5
+printf %s "checking whether source code line length is unlimited... " >&6; }
+if test ${gl_cv_source_line_length_unlimited+y}
+then :
+  printf %s "(cached) " >&6
+else $as_nop
+  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+#ifdef __TANDEM
+choke me
+#endif
+
+_ACEOF
+if (eval "$ac_cpp conftest.$ac_ext") 2>&5 |
+  $EGREP "choke me" >/dev/null 2>&1
+then :
+  gl_cv_source_line_length_unlimited=no
+else $as_nop
+  gl_cv_source_line_length_unlimited=yes
+fi
+rm -rf conftest*
+
+
+fi
+{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: $gl_cv_source_line_length_unlimited" >&5
+printf "%s\n" "$gl_cv_source_line_length_unlimited" >&6; }
+  if test $gl_cv_source_line_length_unlimited = no; then
+    PRAGMA_COLUMNS="#pragma COLUMNS 10000"
+  else
+    PRAGMA_COLUMNS=
+  fi
+
+
+
+  { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for static_assert" >&5
+printf %s "checking for static_assert... " >&6; }
+if test ${gl_cv_static_assert+y}
+then :
+  printf %s "(cached) " >&6
+else $as_nop
+  gl_save_CFLAGS=$CFLAGS
+     for gl_working in "yes, a keyword" "yes, an <assert.h> macro"; do
+      case $gl_working in #(
+  *assert.h*) :
+    CFLAGS="$gl_save_CFLAGS -DINCLUDE_ASSERT_H" ;; #(
+  *) :
+     ;;
+esac
+
+      cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+#if defined __clang__ && __STDC_VERSION__ < 202311
+             #pragma clang diagnostic error "-Wc2x-extensions"
+             #pragma clang diagnostic error "-Wc++1z-extensions"
+            #endif
+            #ifdef INCLUDE_ASSERT_H
+             #include <assert.h>
+            #endif
+            static_assert (2 + 2 == 4, "arithmetic does not work");
+            static_assert (2 + 2 == 4);
+
+int
+main (void)
+{
+
+            static_assert (sizeof (char) == 1, "sizeof does not work");
+            static_assert (sizeof (char) == 1);
+
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_c_try_compile "$LINENO"
+then :
+  gl_cv_static_assert=$gl_working
+else $as_nop
+  gl_cv_static_assert=no
+fi
+rm -f core conftest.err conftest.$ac_objext conftest.beam conftest.$ac_ext
+      CFLAGS=$gl_save_CFLAGS
+      test "$gl_cv_static_assert" != no && break
+     done
+fi
+{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: $gl_cv_static_assert" >&5
+printf "%s\n" "$gl_cv_static_assert" >&6; }
+
+  GL_GENERATE_ASSERT_H=false
+  case $gl_cv_static_assert in #(
+  yes*keyword*) :
+
+printf "%s\n" "#define HAVE_C_STATIC_ASSERT 1" >>confdefs.h
+ ;; #(
+  no) :
+    GL_GENERATE_ASSERT_H=true
+
+
+
+
+
+
+
+
+     if test $gl_cv_have_include_next = yes; then
+       gl_cv_next_assert_h='<'assert.h'>'
+     else
+       { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking absolute name of <assert.h>" >&5
+printf %s "checking absolute name of <assert.h>... " >&6; }
+if test ${gl_cv_next_assert_h+y}
+then :
+  printf %s "(cached) " >&6
+else $as_nop
+
+
+
+  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+#include <assert.h>
+_ACEOF
+                case "$host_os" in
+    aix*) gl_absname_cpp="$ac_cpp -C" ;;
+    *)    gl_absname_cpp="$ac_cpp" ;;
+  esac
+
+  case "$host_os" in
+    mingw*)
+                                          gl_dirsep_regex='[/\\]'
+      ;;
+    *)
+      gl_dirsep_regex='\/'
+      ;;
+  esac
+      gl_make_literal_regex_sed='s,[]$^\\.*/[],\\&,g'
+  gl_header_literal_regex=`echo 'assert.h' \
+                           | sed -e "$gl_make_literal_regex_sed"`
+  gl_absolute_header_sed="/${gl_dirsep_regex}${gl_header_literal_regex}/"'{
+      s/.*"\(.*'"${gl_dirsep_regex}${gl_header_literal_regex}"'\)".*/\1/
+      s|^/[^/]|//&|
+      p
+      q
+    }'
+
+        gl_cv_absolute_assert_h=`(eval "$gl_absname_cpp conftest.$ac_ext") 2>&5 |
+  sed -n "$gl_absolute_header_sed"`
+
+          gl_header=$gl_cv_absolute_assert_h
+          gl_cv_next_assert_h='"'$gl_header'"'
+
+
+fi
+{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: $gl_cv_next_assert_h" >&5
+printf "%s\n" "$gl_cv_next_assert_h" >&6; }
+     fi
+     NEXT_ASSERT_H=$gl_cv_next_assert_h
+
+     if test $gl_cv_have_include_next = yes || test $gl_cv_have_include_next = buggy; then
+       # INCLUDE_NEXT_AS_FIRST_DIRECTIVE='include_next'
+       gl_next_as_first_directive='<'assert.h'>'
+     else
+       # INCLUDE_NEXT_AS_FIRST_DIRECTIVE='include'
+       gl_next_as_first_directive=$gl_cv_next_assert_h
+     fi
+     NEXT_AS_FIRST_DIRECTIVE_ASSERT_H=$gl_next_as_first_directive
+
+
+
+ ;; #(
+  *) :
+     ;;
+esac
+
+
+
+
+
+
+
+  case "$GL_GENERATE_ASSERT_H" in
+    false) ASSERT_H='' ;;
+    true)
+                  if test -z "$ASSERT_H"; then
+        ASSERT_H="${gl_source_base_prefix}assert.h"
+      fi
+      ;;
+    *) echo "*** GL_GENERATE_ASSERT_H is not set correctly" 1>&2; exit 1 ;;
+  esac
+
+
+     if $GL_GENERATE_ASSERT_H; then
+  GL_GENERATE_ASSERT_H_TRUE=
+  GL_GENERATE_ASSERT_H_FALSE='#'
+else
+  GL_GENERATE_ASSERT_H_TRUE='#'
+  GL_GENERATE_ASSERT_H_FALSE=
+fi
+:
+    if test -z "${GL_GENERATE_ASSERT_H_TRUE}" && test -z "${GL_GENERATE_ASSERT_H_FALSE}"; then
+    GL_GENERATE_ASSERT_H_TRUE='#'
+    GL_GENERATE_ASSERT_H_FALSE='#'
+  fi
+
+
+
+
+
+
+
+
+# The following is taken from gnulib/modules/limits-h:
+
+
+
+
+
+
+
+
+
+
+
+     if test $gl_cv_have_include_next = yes; then
+       gl_cv_next_limits_h='<'limits.h'>'
+     else
+       { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking absolute name of <limits.h>" >&5
+printf %s "checking absolute name of <limits.h>... " >&6; }
+if test ${gl_cv_next_limits_h+y}
+then :
+  printf %s "(cached) " >&6
+else $as_nop
+
+             if test $ac_cv_header_limits_h = yes; then
+
+
+
+
+  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+#include <limits.h>
+_ACEOF
+                case "$host_os" in
+    aix*) gl_absname_cpp="$ac_cpp -C" ;;
+    *)    gl_absname_cpp="$ac_cpp" ;;
+  esac
+
+  case "$host_os" in
+    mingw*)
+                                          gl_dirsep_regex='[/\\]'
+      ;;
+    *)
+      gl_dirsep_regex='\/'
+      ;;
+  esac
+      gl_make_literal_regex_sed='s,[]$^\\.*/[],\\&,g'
+  gl_header_literal_regex=`echo 'limits.h' \
+                           | sed -e "$gl_make_literal_regex_sed"`
+  gl_absolute_header_sed="/${gl_dirsep_regex}${gl_header_literal_regex}/"'{
+      s/.*"\(.*'"${gl_dirsep_regex}${gl_header_literal_regex}"'\)".*/\1/
+      s|^/[^/]|//&|
+      p
+      q
+    }'
+
+        gl_cv_absolute_limits_h=`(eval "$gl_absname_cpp conftest.$ac_ext") 2>&5 |
+  sed -n "$gl_absolute_header_sed"`
+
+          gl_header=$gl_cv_absolute_limits_h
+          gl_cv_next_limits_h='"'$gl_header'"'
+          else
+               gl_cv_next_limits_h='<'limits.h'>'
+             fi
+
+
+fi
+{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: $gl_cv_next_limits_h" >&5
+printf "%s\n" "$gl_cv_next_limits_h" >&6; }
+     fi
+     NEXT_LIMITS_H=$gl_cv_next_limits_h
+
+     if test $gl_cv_have_include_next = yes || test $gl_cv_have_include_next = buggy; then
+       # INCLUDE_NEXT_AS_FIRST_DIRECTIVE='include_next'
+       gl_next_as_first_directive='<'limits.h'>'
+     else
+       # INCLUDE_NEXT_AS_FIRST_DIRECTIVE='include'
+       gl_next_as_first_directive=$gl_cv_next_limits_h
+     fi
+     NEXT_AS_FIRST_DIRECTIVE_LIMITS_H=$gl_next_as_first_directive
+
+
+
+
+
+  { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking whether limits.h has WORD_BIT, BOOL_WIDTH etc." >&5
+printf %s "checking whether limits.h has WORD_BIT, BOOL_WIDTH etc.... " >&6; }
+if test ${gl_cv_header_limits_width+y}
+then :
+  printf %s "(cached) " >&6
+else $as_nop
+  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+#ifndef __STDC_WANT_IEC_60559_BFP_EXT__
+             #define __STDC_WANT_IEC_60559_BFP_EXT__ 1
+            #endif
+            #include <limits.h>
+            long long llm = LLONG_MAX;
+            int wb = WORD_BIT;
+            int ullw = ULLONG_WIDTH;
+            int bw = BOOL_WIDTH;
+            int bm = BOOL_MAX;
+            int mblm = MB_LEN_MAX;
+
+int
+main (void)
+{
+
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_c_try_compile "$LINENO"
+then :
+  gl_cv_header_limits_width=yes
+else $as_nop
+  gl_cv_header_limits_width=no
+fi
+rm -f core conftest.err conftest.$ac_objext conftest.beam conftest.$ac_ext
+fi
+{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: $gl_cv_header_limits_width" >&5
+printf "%s\n" "$gl_cv_header_limits_width" >&6; }
+  if test "$gl_cv_header_limits_width" = yes; then
+    GL_GENERATE_LIMITS_H=false
+  else
+    GL_GENERATE_LIMITS_H=true
+  fi
+
+
+
+
+
+  case "$GL_GENERATE_LIMITS_H" in
+    false) LIMITS_H='' ;;
+    true)
+                  if test -z "$LIMITS_H"; then
+        LIMITS_H="${gl_source_base_prefix}limits.h"
+      fi
+      ;;
+    *) echo "*** GL_GENERATE_LIMITS_H is not set correctly" 1>&2; exit 1 ;;
+  esac
+
+
+     if $GL_GENERATE_LIMITS_H; then
+  GL_GENERATE_LIMITS_H_TRUE=
+  GL_GENERATE_LIMITS_H_FALSE='#'
+else
+  GL_GENERATE_LIMITS_H_TRUE='#'
+  GL_GENERATE_LIMITS_H_FALSE=
+fi
+:
+    if test -z "${GL_GENERATE_LIMITS_H_TRUE}" && test -z "${GL_GENERATE_LIMITS_H_FALSE}"; then
+    GL_GENERATE_LIMITS_H_TRUE='#'
+    GL_GENERATE_LIMITS_H_FALSE='#'
+  fi
+
+
+
+
+
+
+
+
+# The following is taken from gnulib/modules/stdckdint:
+
+
+if test $ac_cv_header_stdckdint_h = yes; then
+  GL_GENERATE_STDCKDINT_H=false
+else
+  GL_GENERATE_STDCKDINT_H=true
+fi
+
+
+
+
+  case "$GL_GENERATE_STDCKDINT_H" in
+    false) STDCKDINT_H='' ;;
+    true)
+                  if test -z "$STDCKDINT_H"; then
+        STDCKDINT_H="${gl_source_base_prefix}stdckdint.h"
+      fi
+      ;;
+    *) echo "*** GL_GENERATE_STDCKDINT_H is not set correctly" 1>&2; exit 1 ;;
+  esac
+
+
+     if $GL_GENERATE_STDCKDINT_H; then
+  GL_GENERATE_STDCKDINT_H_TRUE=
+  GL_GENERATE_STDCKDINT_H_FALSE='#'
+else
+  GL_GENERATE_STDCKDINT_H_TRUE='#'
+  GL_GENERATE_STDCKDINT_H_FALSE=
+fi
+:
+    if test -z "${GL_GENERATE_STDCKDINT_H_TRUE}" && test -z "${GL_GENERATE_STDCKDINT_H_FALSE}"; then
+    GL_GENERATE_STDCKDINT_H_TRUE='#'
+    GL_GENERATE_STDCKDINT_H_FALSE='#'
+  fi
+
+
+
+
+
+
+
+
+# The following is taken from gnulib/modules/xalloc:
+:
+
+
+printf "%s\n" "#define GNULIB_XALLOC 1" >>confdefs.h
+
+
+
+
+# The following is taken from gnulib/modules/xalloc-die:
+
+
+printf "%s\n" "#define GNULIB_XALLOC_DIE 1" >>confdefs.h
+
+
+
+
 { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking whether C compiler accepts " >&5
 printf %s "checking whether C compiler accepts ... " >&6; }
 if test ${ax_cv_check_cflags__+y}
@@ -12570,16 +13653,25 @@ then
 	ac_fn_c_check_func "$LINENO" "mmap" "ac_cv_func_mmap"
 if test "x$ac_cv_func_mmap" = xyes
 then :
+  printf "%s\n" "#define HAVE_MMAP 1" >>confdefs.h
 
 fi
-
-	ac_fn_c_check_func "$LINENO" "munmap" "ac_cv_func_munmap"
+ac_fn_c_check_func "$LINENO" "munmap" "ac_cv_func_munmap"
 if test "x$ac_cv_func_munmap" = xyes
 then :
+  printf "%s\n" "#define HAVE_MUNMAP 1" >>confdefs.h
+
+fi
+ac_fn_c_check_func "$LINENO" "atexit" "ac_cv_func_atexit"
+if test "x$ac_cv_func_atexit" = xyes
+then :
+  printf "%s\n" "#define HAVE_ATEXIT 1" >>confdefs.h
 
 fi
 
-	if test $ac_cv_func_mmap = yes && test $ac_cv_func_munmap = yes
+	if test $ac_cv_func_mmap = yes &&
+	   test $ac_cv_func_munmap = yes &&
+	   test $ac_cv_func_atexit = yes
 	then
 		use_persistent_malloc=yes
 		case $host_os in
@@ -13701,6 +14793,104 @@ printf "%s\n" "#define const /**/" >>confdefs.h
 
 fi
 
+
+  { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for flexible array member" >&5
+printf %s "checking for flexible array member... " >&6; }
+if test ${ac_cv_c_flexmember+y}
+then :
+  printf %s "(cached) " >&6
+else $as_nop
+  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+#include <stdlib.h>
+            #include <stdio.h>
+            #include <stddef.h>
+            struct m { struct m *next, **list; char name[]; };
+            struct s { struct s *p; struct m *m; int n; double d[]; };
+int
+main (void)
+{
+int m = getchar ();
+            size_t nbytes = offsetof (struct s, d) + m * sizeof (double);
+            nbytes += sizeof (struct s) - 1;
+            nbytes -= nbytes % sizeof (struct s);
+            struct s *p = malloc (nbytes);
+            p->p = p;
+            p->m = NULL;
+            p->d[0] = 0.0;
+            return p->d != (double *) NULL;
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_c_try_compile "$LINENO"
+then :
+  ac_cv_c_flexmember=yes
+else $as_nop
+  ac_cv_c_flexmember=no
+fi
+rm -f core conftest.err conftest.$ac_objext conftest.beam conftest.$ac_ext
+fi
+{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: $ac_cv_c_flexmember" >&5
+printf "%s\n" "$ac_cv_c_flexmember" >&6; }
+  if test $ac_cv_c_flexmember = yes; then
+
+printf "%s\n" "#define FLEXIBLE_ARRAY_MEMBER /**/" >>confdefs.h
+
+  else
+    printf "%s\n" "#define FLEXIBLE_ARRAY_MEMBER 1" >>confdefs.h
+
+  fi
+
+
+  { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for flexible array member" >&5
+printf %s "checking for flexible array member... " >&6; }
+if test ${ac_cv_c_flexmember+y}
+then :
+  printf %s "(cached) " >&6
+else $as_nop
+  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+#include <stdlib.h>
+            #include <stdio.h>
+            #include <stddef.h>
+            struct m { struct m *next, **list; char name[]; };
+            struct s { struct s *p; struct m *m; int n; double d[]; };
+int
+main (void)
+{
+int m = getchar ();
+            size_t nbytes = offsetof (struct s, d) + m * sizeof (double);
+            nbytes += sizeof (struct s) - 1;
+            nbytes -= nbytes % sizeof (struct s);
+            struct s *p = malloc (nbytes);
+            p->p = p;
+            p->m = NULL;
+            p->d[0] = 0.0;
+            return p->d != (double *) NULL;
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_c_try_compile "$LINENO"
+then :
+  ac_cv_c_flexmember=yes
+else $as_nop
+  ac_cv_c_flexmember=no
+fi
+rm -f core conftest.err conftest.$ac_objext conftest.beam conftest.$ac_ext
+fi
+{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: $ac_cv_c_flexmember" >&5
+printf "%s\n" "$ac_cv_c_flexmember" >&6; }
+  if test $ac_cv_c_flexmember = yes; then
+
+printf "%s\n" "#define FLEXIBLE_ARRAY_MEMBER /**/" >>confdefs.h
+
+  else
+    printf "%s\n" "#define FLEXIBLE_ARRAY_MEMBER 1" >>confdefs.h
+
+  fi
+
 { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for C/C++ restrict keyword" >&5
 printf %s "checking for C/C++ restrict keyword... " >&6; }
 if test ${ac_cv_c_restrict+y}
@@ -13824,6 +15014,72 @@ if test $ac_cv_c_stringize = yes; then
 printf "%s\n" "#define HAVE_STRINGIZE 1" >>confdefs.h
 
 fi
+
+
+  { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking whether ctype.h defines __header_inline" >&5
+printf %s "checking whether ctype.h defines __header_inline... " >&6; }
+if test ${gl_cv_have___header_inline+y}
+then :
+  printf %s "(cached) " >&6
+else $as_nop
+  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+#include <ctype.h>
+                         #ifndef __header_inline
+                          #error "<ctype.h> does not define __header_inline"
+                         #endif
+
+_ACEOF
+if ac_fn_c_try_cpp "$LINENO"
+then :
+  gl_cv_have___header_inline=yes
+else $as_nop
+  gl_cv_have___header_inline=no
+fi
+rm -f conftest.err conftest.i conftest.$ac_ext
+fi
+{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: $gl_cv_have___header_inline" >&5
+printf "%s\n" "$gl_cv_have___header_inline" >&6; }
+  if test "$gl_cv_have___header_inline" = yes; then
+
+printf "%s\n" "#define HAVE___HEADER_INLINE 1" >>confdefs.h
+
+  fi
+
+
+
+
+  { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking whether ctype.h defines __header_inline" >&5
+printf %s "checking whether ctype.h defines __header_inline... " >&6; }
+if test ${gl_cv_have___header_inline+y}
+then :
+  printf %s "(cached) " >&6
+else $as_nop
+  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+#include <ctype.h>
+                         #ifndef __header_inline
+                          #error "<ctype.h> does not define __header_inline"
+                         #endif
+
+_ACEOF
+if ac_fn_c_try_cpp "$LINENO"
+then :
+  gl_cv_have___header_inline=yes
+else $as_nop
+  gl_cv_have___header_inline=no
+fi
+rm -f conftest.err conftest.i conftest.$ac_ext
+fi
+{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: $gl_cv_have___header_inline" >&5
+printf "%s\n" "$gl_cv_have___header_inline" >&6; }
+  if test "$gl_cv_have___header_inline" = yes; then
+
+printf "%s\n" "#define HAVE___HEADER_INLINE 1" >>confdefs.h
+
+  fi
+
+
 
 
 ac_config_headers="$ac_config_headers config.h:configh.in"

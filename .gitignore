@@ -14,6 +14,9 @@ config.log
 config.status
 gawk
 gawkbug
+support/assert.h
+support/limits.h
+support/stdckdint.h
 stamp-h1
 
 test/fmtspcl.ok

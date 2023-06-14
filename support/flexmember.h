@@ -20,12 +20,10 @@
 
    Written by Paul Eggert.  */
 
-#ifndef GAWK
 /* This file uses _Alignof.  */
 #if !_GL_CONFIG_H_INCLUDED
  #error "Please include config.h first."
 #endif
-#endif /* GAWK */
 
 #include <stddef.h>
 

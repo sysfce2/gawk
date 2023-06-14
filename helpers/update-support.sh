@@ -10,23 +10,30 @@
 
 GL=/usr/local/src/Gnu/gnulib/lib
 
-FILE_LIST="cdefs.h
+FILE_LIST="assert.in.h
+cdefs.h
 dfa.c
 dfa.h
 dynarray.h
 flexmember.h
+ialloc.c
+ialloc.h
 idx.h
 intprops.h
 libc-config.h
+limits.in.h
 localeinfo.c
 localeinfo.h
+minmax.h
 regcomp.c
 regex.c
 regexec.c
 regex.h
 regex_internal.c
 regex_internal.h
+stdckdint.in.h
 verify.h
+xmalloc.c
 malloc/dynarray_at_failure.c
 malloc/dynarray_emplace_enlarge.c
 malloc/dynarray_finalize.c
@@ -40,6 +47,35 @@ do
 	if [ -f $GL/$i ] && [ -f support/$i ]
 	then
 		cp $GL/$i support/$i
+	fi
+done
+
+MISSING_FILE_LIST="mktime.c
+mktime-internal.h
+reallocarray.c"
+
+for i in $MISSING_FILE_LIST
+do
+	if [ -f $GL/$i ] && [ -f missing_d/$i ]
+	then
+		cp $GL/$i missing_d/$i
+	fi
+done
+
+# gnulib-common.m4 could be in this list.
+# However, it is currently omitted to make Awk's copy smaller.
+M4_FILE_LIST="absolute-header.m4
+assert_h.m4
+flexmember.m4
+include_next.m4
+limits-h.m4
+xalloc.m4"
+
+for i in $M4_FILE_LIST
+do
+	if [ -f $GL/../m4/$i ] && [ -f m4/$i ]
+	then
+		cp $GL/$i m4/$i
 	fi
 done
 

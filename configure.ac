@@ -185,6 +185,7 @@ AC_CHECK_HEADERS(arpa/inet.h fcntl.h locale.h libintl.h mcheck.h \
 	sys/ioctl.h sys/param.h sys/select.h sys/socket.h sys/time.h unistd.h \
 	termios.h stropts.h wchar.h wctype.h)
 
+gl_COMMON
 gl_C_BOOL
 AC_HEADER_SYS_WAIT
 AC_CHECK_HEADERS_ONCE([sys/time.h])
@@ -318,12 +319,45 @@ AC_CHECK_FUNCS(__etoa_l atexit btowc fmod fwrite_unlocked gai_strerror \
 	getgrent getgroups grantpt isascii isblank iswctype iswlower iswupper \
 	lstat \
 	mbrlen memcmp memcpy memmove memset \
-	mkstemp mtrace posix_openpt setenv setlocale setsid sigprocmask \
+	mkstemp mtrace posix_openpt reallocarray setenv setlocale setsid sigprocmask \
 	snprintf strcasecmp strchr strcoll strerror strftime strncasecmp \
 	strsignal strtod strtoul system timegm tmpfile towlower towupper \
 	tzset usleep waitpid wcrtomb wcscoll wctype)
 dnl this check is for both mbrtowc and the mbstate_t type, which is good
 AC_FUNC_MBRTOWC
+
+
+# The following is taken from gnulib/modules/assert-h:
+gl_ASSERT_H
+gl_CONDITIONAL_HEADER([assert.h])
+AC_PROG_MKDIR_P
+
+
+# The following is taken from gnulib/modules/limits-h:
+gl_LIMITS_H
+gl_CONDITIONAL_HEADER([limits.h])
+AC_PROG_MKDIR_P
+
+
+# The following is taken from gnulib/modules/stdckdint:
+AC_CHECK_HEADERS_ONCE([stdckdint.h])
+if test $ac_cv_header_stdckdint_h = yes; then
+  GL_GENERATE_STDCKDINT_H=false
+else
+  GL_GENERATE_STDCKDINT_H=true
+fi
+gl_CONDITIONAL_HEADER([stdckdint.h])
+AC_PROG_MKDIR_P
+
+
+# The following is taken from gnulib/modules/xalloc:
+gl_XALLOC
+gl_MODULE_INDICATOR([xalloc])
+
+
+# The following is taken from gnulib/modules/xalloc-die:
+gl_MODULE_INDICATOR([xalloc-die])
+
 
 dnl check if we can use the persistent memory allocator
 GAWK_USE_PERSISTENT_MALLOC
@@ -470,9 +504,11 @@ AC_STRUCT_TIMEZONE
 dnl checks for compiler characteristics
 AC_C_CHAR_UNSIGNED
 AC_C_CONST
+AC_C_FLEXIBLE_ARRAY_MEMBER
 AC_C_RESTRICT
 AC_C_INLINE
 AC_C_STRINGIZE
+gl_EXTERN_INLINE
 
 AC_CONFIG_HEADERS([config.h:configh.in])
 AH_BOTTOM([#include "custom.h"])

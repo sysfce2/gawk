@@ -467,8 +467,10 @@ main(int argc, char **argv)
 	if (os_isatty(fileno(stdout)))
 		output_is_tty = true;
 
+#ifdef HAVE_ATEXIT
 	/* arrange to save free lists if using PMA */
 	atexit(pma_save_free_lists);
+#endif
 
 	/* initialize API before loading extension libraries */
 	init_ext_api();
