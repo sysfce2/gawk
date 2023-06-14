@@ -1,3 +1,7 @@
+2023-06-14         Arnold D. Robbins     <arnold@skeeve.com>
+
+	* main.c (__dso_handle): Define for PCC. Needed for glibc.
+
 2023-06-12         Arnold D. Robbins     <arnold@skeeve.com>
 
 	* main.c (cmdline_fs): Add ELIDE_BACK_NL to flags in call

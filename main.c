@@ -1988,3 +1988,8 @@ check_pma_security(const char *pma_file)
 	}
 #endif /* USE_PERSISTENT_MALLOC */
 }
+
+#ifdef __PCC__
+int __dso_handle = 0;
+#endif
+
