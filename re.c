@@ -623,7 +623,7 @@ again:
 	if (sp == NULL)
 		goto done;
 
-	for (count++, sp++; *sp; sp++) {
+	for (count++, sp++; *sp != '\0'; sp++) {
 		if (*sp == '[')
 			count++;
 		/*

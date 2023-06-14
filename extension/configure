@@ -8787,16 +8787,9 @@ then :
   printf "%s\n" "#define HAVE_MUNMAP 1" >>confdefs.h
 
 fi
-ac_fn_c_check_func "$LINENO" "atexit" "ac_cv_func_atexit"
-if test "x$ac_cv_func_atexit" = xyes
-then :
-  printf "%s\n" "#define HAVE_ATEXIT 1" >>confdefs.h
-
-fi
 
 	if test $ac_cv_func_mmap = yes &&
-	   test $ac_cv_func_munmap = yes &&
-	   test $ac_cv_func_atexit = yes
+	   test $ac_cv_func_munmap = yes
 	then
 		use_persistent_malloc=yes
 		case $host_os in

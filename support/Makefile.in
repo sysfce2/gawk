@@ -845,51 +845,6 @@ distclean-local:
 @GL_GENERATE_STDCKDINT_H_FALSE@stdckdint.h: $(top_builddir)/config.status
 @GL_GENERATE_STDCKDINT_H_FALSE@	rm -f $@
 
-# We need the following in order to create <assert.h> when the system
-# doesn't have one that works with the given compiler.
-@GL_GENERATE_ASSERT_H_TRUE@assert.h: assert.in.h verify.h $(top_builddir)/config.status
-@GL_GENERATE_ASSERT_H_TRUE@	$(AM_V_GEN)$(MKDIR_P) '.'
-@GL_GENERATE_ASSERT_H_TRUE@	$(gl_V_at){ $(SED_HEADER_STDOUT) \
-@GL_GENERATE_ASSERT_H_TRUE@	      -e 's|@''INCLUDE_NEXT''@|$(INCLUDE_NEXT)|g' \
-@GL_GENERATE_ASSERT_H_TRUE@	      -e 's|@''PRAGMA_SYSTEM_HEADER''@|@PRAGMA_SYSTEM_HEADER@|g' \
-@GL_GENERATE_ASSERT_H_TRUE@	      -e 's|@''PRAGMA_COLUMNS''@|@PRAGMA_COLUMNS@|g' \
-@GL_GENERATE_ASSERT_H_TRUE@	      -e 's|@''NEXT_ASSERT_H''@|$(NEXT_ASSERT_H)|g' \
-@GL_GENERATE_ASSERT_H_TRUE@	      < $(srcdir)/assert.in.h && \
-@GL_GENERATE_ASSERT_H_TRUE@	  sed -e '/@assert.h omit start@/,/@assert.h omit end@/d' \
-@GL_GENERATE_ASSERT_H_TRUE@	      -e 's|_gl_verify|_gl_static_assert|g' \
-@GL_GENERATE_ASSERT_H_TRUE@	      -e 's|_GL_VERIFY|_GL_STATIC_ASSERT|g' \
-@GL_GENERATE_ASSERT_H_TRUE@	      -e 's|_GL\(_STATIC_ASSERT_H\)|_${gl_include_guard_prefix}\1|g' \
-@GL_GENERATE_ASSERT_H_TRUE@	      < $(srcdir)/verify.h; \
-@GL_GENERATE_ASSERT_H_TRUE@	} > $@-t
-@GL_GENERATE_ASSERT_H_TRUE@	$(AM_V_at)mv $@-t $@
-@GL_GENERATE_ASSERT_H_FALSE@assert.h: $(top_builddir)/config.status
-@GL_GENERATE_ASSERT_H_FALSE@	rm -f $@
-
-# We need the following in order to create <limits.h> when the system
-# doesn't have one that is compatible with GNU.
-@GL_GENERATE_LIMITS_H_TRUE@limits.h: limits.in.h $(top_builddir)/config.status
-@GL_GENERATE_LIMITS_H_TRUE@	$(AM_V_GEN)$(MKDIR_P) '.'
-@GL_GENERATE_LIMITS_H_TRUE@	$(gl_V_at)$(SED_HEADER_STDOUT) \
-@GL_GENERATE_LIMITS_H_TRUE@	      -e 's|@''GUARD_PREFIX''@|${gl_include_guard_prefix}|g' \
-@GL_GENERATE_LIMITS_H_TRUE@	      -e 's|@''INCLUDE_NEXT''@|$(INCLUDE_NEXT)|g' \
-@GL_GENERATE_LIMITS_H_TRUE@	      -e 's|@''PRAGMA_SYSTEM_HEADER''@|@PRAGMA_SYSTEM_HEADER@|g' \
-@GL_GENERATE_LIMITS_H_TRUE@	      -e 's|@''PRAGMA_COLUMNS''@|@PRAGMA_COLUMNS@|g' \
-@GL_GENERATE_LIMITS_H_TRUE@	      -e 's|@''NEXT_LIMITS_H''@|$(NEXT_LIMITS_H)|g' \
-@GL_GENERATE_LIMITS_H_TRUE@	      $(srcdir)/limits.in.h > $@-t
-@GL_GENERATE_LIMITS_H_TRUE@	$(AM_V_at)mv $@-t $@
-@GL_GENERATE_LIMITS_H_FALSE@limits.h: $(top_builddir)/config.status
-@GL_GENERATE_LIMITS_H_FALSE@	rm -f $@
-
-# We need the following in order to create <stdckdint.h> when the system
-# doesn't have one that works with the given compiler.
-@GL_GENERATE_STDCKDINT_H_TRUE@stdckdint.h: stdckdint.in.h $(top_builddir)/config.status
-@GL_GENERATE_STDCKDINT_H_TRUE@	$(AM_V_GEN)$(MKDIR_P) '.'
-@GL_GENERATE_STDCKDINT_H_TRUE@	$(gl_V_at)$(SED_HEADER_STDOUT) \
-@GL_GENERATE_STDCKDINT_H_TRUE@	  $(srcdir)/stdckdint.in.h > $@-t
-@GL_GENERATE_STDCKDINT_H_TRUE@	$(AM_V_at)mv $@-t $@
-@GL_GENERATE_STDCKDINT_H_FALSE@stdckdint.h: $(top_builddir)/config.status
-@GL_GENERATE_STDCKDINT_H_FALSE@	rm -f $@
-
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
 .NOEXPORT:
