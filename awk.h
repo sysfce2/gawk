@@ -181,20 +181,18 @@ typedef int off_t;
 #endif
 #endif
 
-#include "regex.h"
-#include "dfa.h"
+#include "minrx.h"
 typedef struct Regexp {
-	struct re_pattern_buffer pat;
-	struct re_registers regs;
-	struct dfa *dfareg;
+	minrx_regex_t mre_pat;
+	minrx_regmatch_t *mre_regs;
 	bool has_meta;		/* re has meta chars so (probably) isn't simple string */
 	bool maybe_long;	/* re has meta chars that can match long text */
 } Regexp;
-#define	RESTART(rp,s)	(rp)->regs.start[0]
-#define	REEND(rp,s)	(rp)->regs.end[0]
-#define	SUBPATSTART(rp,s,n)	(rp)->regs.start[n]
-#define	SUBPATEND(rp,s,n)	(rp)->regs.end[n]
-#define	NUMSUBPATS(rp,s)	(rp)->regs.num_regs
+#define	RESTART(rp,s)	(rp)->mre_regs[0].rm_so
+#define	REEND(rp,s)	(rp)->mre_regs[0].rm_eo
+#define	SUBPATSTART(rp,s,n)	(rp)->mre_regs[n].rm_so
+#define	SUBPATEND(rp,s,n)	(rp)->mre_regs[n].rm_eo
+#define	NUMSUBPATS(rp,s)	(rp)->mre_pat.re_nsub
 
 /* regexp matching flags: */
 #define RE_NO_FLAGS	0	/* empty flags */

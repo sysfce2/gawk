@@ -27,7 +27,6 @@
 
 #include "localeinfo.h"
 
-static reg_syntax_t syn;
 static void check_bracket_exp(char *s, size_t len);
 const char *regexflags2str(int flags);
 
@@ -50,7 +49,6 @@ make_regexp(const char *s, size_t len, bool ignorecase, bool dfa, bool canfatal)
 	static bool first = true;
 	static bool no_dfa = false;
 	int i;
-	static struct dfa* dfaregs[2] = { NULL, NULL };
 	static bool nul_warned = false;
 
 	assert(s[len] == '\0');
@@ -261,8 +259,6 @@ make_regexp(const char *s, size_t len, bool ignorecase, bool dfa, bool canfatal)
 	len = dest - buf;
 
 	ezalloc(rp, Regexp *, sizeof(*rp), "make_regexp");
-	rp->pat.allocated = 0;	/* regex will allocate the buffer */
-	emalloc(rp->pat.fastmap, char *, 256, "make_regexp");
 
 	/*
 	 * Lo these many years ago, had I known what a P.I.T.A. IGNORECASE
@@ -280,19 +276,7 @@ make_regexp(const char *s, size_t len, bool ignorecase, bool dfa, bool canfatal)
 	 */
 
 	ignorecase = !! ignorecase;	/* force to 1 or 0 */
-	if (ignorecase) {
-		if (gawk_mb_cur_max > 1) {
-			syn |= RE_ICASE;
-			rp->pat.translate = NULL;
-		} else {
-			syn &= ~RE_ICASE;
-			rp->pat.translate = (RE_TRANSLATE_TYPE) casetable;
-		}
-	} else {
-		rp->pat.translate = NULL;
-		syn &= ~RE_ICASE;
-	}
-
+#if 0
 	/* initialize dfas to hold syntax */
 	if (first) {
 		first = false;
@@ -322,6 +306,26 @@ make_regexp(const char *s, size_t len, bool ignorecase, bool dfa, bool canfatal)
 		dfacomp(buf, len, rp->dfareg, true);
 	} else
 		rp->dfareg = NULL;
+#else
+	int flags = MINRX_REG_EXTENDED;
+	if (ignorecase)
+		flags |= MINRX_REG_ICASE;
+
+	int ret;
+	if ((ret = minrx_regncomp(& rp->mre_pat, len, buf, flags)) != 0) {
+		refree(rp);
+		/* rerr already gettextized inside regex routines */
+		rerr = minrx_regerror(ret);
+		if (! canfatal) {
+			error("%s: /%s/", rerr, s);
+ 			return NULL;
+		}
+		fatal("invalid regexp: %s: /%s/", rerr, s);
+	}
+
+	emalloc(rp->mre_regs, minrx_regmatch_t *,
+			rp->mre_pat.re_nsub * sizeof(minrx_regmatch_t), "make_regexp");
+#endif
 
 	/* Additional flags that help with RS as regexp. */
 	for (i = 0; i < len; i++) {
@@ -352,13 +356,14 @@ research(Regexp *rp, char *str, int start,
 	int need_start;
 	int no_bol;
 	int res;
+	int minrx_flags = 0;
 
 	need_start = ((flags & RE_NEED_START) != 0);
 	no_bol = ((flags & RE_NO_BOL) != 0);
 
 	if (no_bol)
-		rp->pat.not_bol = 1;
-
+		minrx_flags |= MINRX_REG_NOTBOL;
+#if 0
 	/*
 	 * Always do dfa search if can; if it fails, then even if
 	 * need_start is true, we won't bother with the regex search.
@@ -409,6 +414,13 @@ research(Regexp *rp, char *str, int start,
 		res = -1;
 
 	rp->pat.not_bol = 0;
+#else
+	res = minrx_regnexec(&(rp->mre_pat),
+			len, str,
+			need_start ? rp->mre_pat.re_nsub : 0,
+			need_start ? rp->mre_regs : NULL,
+			minrx_flags);
+#endif
 	return res;
 }
 
@@ -419,16 +431,7 @@ refree(Regexp *rp)
 {
 	if (rp == NULL)
 		return;
-	rp->pat.translate = NULL;
-	regfree(& rp->pat);
-	if (rp->regs.start)
-		free(rp->regs.start);
-	if (rp->regs.end)
-		free(rp->regs.end);
-	if (rp->dfareg != NULL) {
-		dfafree(rp->dfareg);
-		free(rp->dfareg);
-	}
+	efree(rp->mre_regs);
 	efree(rp);
 }
 
@@ -519,6 +522,7 @@ resetup()
 	 *	Aharon Robbins <arnold@skeeve.com>
 	 *	Sun, 21 Oct 2007 23:55:33 +0200
 	 */
+#if 0
 	if (do_posix)
 		syn = RE_SYNTAX_POSIX_AWK;	/* strict POSIX re's */
 	else if (do_traditional)
@@ -541,6 +545,7 @@ resetup()
 		syn |= RE_INTERVALS | RE_INVALID_INTERVAL_ORD | RE_NO_BK_BRACES;
 
 	(void) re_set_syntax(syn);
+#endif
 }
 
 /* using_utf8 --- are we using utf8 */
@@ -576,6 +581,9 @@ reisstring(const char *text, size_t len, Regexp *re, const char *buf)
 const char *
 reflags2str(int flagval)
 {
+#if 1
+	return "";
+#else
 	static const struct flagtab values[] = {
 		{ RE_BACKSLASH_ESCAPE_IN_LISTS, "RE_BACKSLASH_ESCAPE_IN_LISTS" },
 		{ RE_BK_PLUS_QM, "RE_BK_PLUS_QM" },
@@ -609,6 +617,7 @@ reflags2str(int flagval)
 		return "RE_SYNTAX_EMACS";
 
 	return genflags2str(flagval, values);
+#endif
 }
 
 /*

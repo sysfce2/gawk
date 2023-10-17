@@ -62,6 +62,8 @@ libsupport_a_SOURCES = \
 	libc-config.h \
 	localeinfo.c \
 	localeinfo.h \
+	minrx.cpp \
+	minrx.h \
 	random.c \
 	random.h \
 	regex.c \

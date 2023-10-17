@@ -2761,7 +2761,7 @@ do_match(int nargs)
 	int rstart, len, ii;
 	int rlength;
 	Regexp *rp;
-	regoff_t s;
+	ssize_t s;
 	char *start;
 	char *buf = NULL;
 	char buff[100];
