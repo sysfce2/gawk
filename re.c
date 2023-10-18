@@ -421,7 +421,7 @@ research(Regexp *rp, char *str, int start,
 			need_start ? rp->mre_regs : NULL,
 			minrx_flags);
 	if (res == 0)
-		res = rp->mre_regs[0].rm_so;
+		res = rp->mre_regs[0].rm_so + start;
 	else
 		res = -1;
 #endif
