@@ -416,10 +416,14 @@ research(Regexp *rp, char *str, int start,
 	rp->pat.not_bol = 0;
 #else
 	res = minrx_regnexec(&(rp->mre_pat),
-			len, str,
-			need_start ? rp->mre_pat.re_nsub : 0,
+			len, str + start,
+			need_start ? rp->mre_pat.re_nsub : 1,
 			need_start ? rp->mre_regs : NULL,
 			minrx_flags);
+	if (res == 0)
+		res = rp->mre_regs[0].rm_so;
+	else
+		res = -1;
 #endif
 	return res;
 }
