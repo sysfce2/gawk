@@ -181,18 +181,30 @@ typedef int off_t;
 #endif
 #endif
 
+#include "regex.h"
+#include "dfa.h"
 #include "minrx.h"
 typedef struct Regexp {
+	struct re_pattern_buffer pat;
+	struct re_registers regs;
+	struct dfa *dfareg;
 	minrx_regex_t mre_pat;
 	minrx_regmatch_t *mre_regs;
 	bool has_meta;		/* re has meta chars so (probably) isn't simple string */
 	bool maybe_long;	/* re has meta chars that can match long text */
 } Regexp;
-#define	RESTART(rp,s)	(rp)->mre_regs[0].rm_so
-#define	REEND(rp,s)	(rp)->mre_regs[0].rm_eo
-#define	SUBPATSTART(rp,s,n)	(rp)->mre_regs[n].rm_so
-#define	SUBPATEND(rp,s,n)	(rp)->mre_regs[n].rm_eo
-#define	NUMSUBPATS(rp,s)	(rp)->mre_pat.re_nsub
+
+extern int re_restart(Regexp *rp, const char *s);
+extern int re_reend(Regexp *rp, const char *s);
+extern int re_subpatstart(Regexp *rp, const char *s, int n);
+extern int re_subpatend(Regexp *rp, const char *s, int n);
+extern int re_numsubpats(Regexp *rp, const char *s);
+
+#define	RESTART(rp,s)	re_restart(rp, s)
+#define	REEND(rp,s)	re_reend(rp, s)
+#define	SUBPATSTART(rp,s,n)	re_subpatstart(rp,s,n)
+#define	SUBPATEND(rp,s,n)	re_subpatend(rp,s,n)
+#define	NUMSUBPATS(rp,s)	re_numsubpats(rp,s)
 
 /* regexp matching flags: */
 #define RE_NO_FLAGS	0	/* empty flags */
@@ -1157,6 +1169,7 @@ extern struct block_header nextfree[BLOCK_MAX];
 extern bool field0_valid;
 
 extern bool do_itrace;	/* separate so can poke from a debugger */
+extern bool use_gnu_matchers;	/* Use gnu matchers, not minrx */
 
 extern SRCFILE *srcfiles; /* source files */
 

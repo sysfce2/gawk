@@ -27,6 +27,7 @@
 
 #include "localeinfo.h"
 
+static reg_syntax_t syn;
 static void check_bracket_exp(char *s, size_t len);
 const char *regexflags2str(int flags);
 static const char *get_minrx_regerror(int errcode, Regexp *rp);
@@ -50,6 +51,7 @@ make_regexp(const char *s, size_t len, bool ignorecase, bool dfa, bool canfatal)
 	static bool first = true;
 	static bool no_dfa = false;
 	int i;
+	static struct dfa* dfaregs[2] = { NULL, NULL };
 	static bool nul_warned = false;
 
 	assert(s[len] == '\0');
@@ -261,75 +263,92 @@ make_regexp(const char *s, size_t len, bool ignorecase, bool dfa, bool canfatal)
 
 	ezalloc(rp, Regexp *, sizeof(*rp), "make_regexp");
 
-	/*
-	 * Lo these many years ago, had I known what a P.I.T.A. IGNORECASE
-	 * was going to turn out to be, I wouldn't have bothered with it.
-	 *
-	 * In the case where we have a multibyte character set, we have no
-	 * choice but to use RE_ICASE, since the casetable is for single-byte
-	 * character sets only.
-	 *
-	 * On the other hand, if we do have a single-byte character set,
-	 * using the casetable should give  a performance improvement, since
-	 * it's computed only once, not each time a regex is compiled.  We
-	 * also think it's probably better for portability.  See the
-	 * discussion by the definition of casetable[] in eval.c.
-	 */
+	if (use_gnu_matchers) {
+		rp->pat.allocated = 0;	/* regex will allocate the buffer */
+		emalloc(rp->pat.fastmap, char *, 256, "make_regexp");
 
-	ignorecase = !! ignorecase;	/* force to 1 or 0 */
-#if 0
-	/* initialize dfas to hold syntax */
-	if (first) {
-		first = false;
-		dfaregs[0] = dfaalloc();
-		dfaregs[1] = dfaalloc();
-		dfasyntax(dfaregs[0], & localeinfo, syn, DFA_ANCHOR);
-		dfasyntax(dfaregs[1], & localeinfo, syn | RE_ICASE, DFA_ANCHOR);
-	}
+		/*
+		 * Lo these many years ago, had I known what a P.I.T.A. IGNORECASE
+		 * was going to turn out to be, I wouldn't have bothered with it.
+		 *
+		 * In the case where we have a multibyte character set, we have no
+		 * choice but to use RE_ICASE, since the casetable is for single-byte
+		 * character sets only.
+		 *
+		 * On the other hand, if we do have a single-byte character set,
+		 * using the casetable should give  a performance improvement, since
+		 * it's computed only once, not each time a regex is compiled.  We
+		 * also think it's probably better for portability.  See the
+		 * discussion by the definition of casetable[] in eval.c.
+		 */
 
-	re_set_syntax(syn);
+		ignorecase = !! ignorecase;	/* force to 1 or 0 */
+		if (ignorecase) {
+			if (gawk_mb_cur_max > 1) {
+				syn |= RE_ICASE;
+				rp->pat.translate = NULL;
+			} else {
+				syn &= ~RE_ICASE;
+				rp->pat.translate = (RE_TRANSLATE_TYPE) casetable;
+			}
+		} else {
+			rp->pat.translate = NULL;
+			syn &= ~RE_ICASE;
+		}
 
-	if ((rerr = re_compile_pattern(buf, len, &(rp->pat))) != NULL) {
-		refree(rp);
-		if (! canfatal) {
+		/* initialize dfas to hold syntax */
+		if (first) {
+			first = false;
+			dfaregs[0] = dfaalloc();
+			dfaregs[1] = dfaalloc();
+			dfasyntax(dfaregs[0], & localeinfo, syn, DFA_ANCHOR);
+			dfasyntax(dfaregs[1], & localeinfo, syn | RE_ICASE, DFA_ANCHOR);
+		}
+
+		re_set_syntax(syn);
+
+		if ((rerr = re_compile_pattern(buf, len, &(rp->pat))) != NULL) {
+			refree(rp);
+			if (! canfatal) {
+				/* rerr already gettextized inside regex routines */
+				error("%s: /%s/", rerr, s);
+				return NULL;
+			}
+			fatal("invalid regexp: %s: /%s/", rerr, s);
+		}
+
+		/* gack. this must be done *after* re_compile_pattern */
+		rp->pat.newline_anchor = false; /* don't get \n in middle of string */
+		if (dfa && ! no_dfa) {
+			rp->dfareg = dfaalloc();
+			dfacopysyntax(rp->dfareg, dfaregs[ignorecase]);
+			dfacomp(buf, len, rp->dfareg, true);
+		} else
+			rp->dfareg = NULL;
+	} else {
+		int flags = MINRX_REG_EXTENDED;
+		int ret;
+
+		if (ignorecase)
+			flags |= MINRX_REG_ICASE;
+
+		if ((ret = minrx_regncomp(& rp->mre_pat, len, buf, flags)) != 0) {
 			/* rerr already gettextized inside regex routines */
-			error("%s: /%s/", rerr, s);
- 			return NULL;
+			rerr = get_minrx_regerror(ret, rp);
+
+			refree(rp);
+			if (! canfatal) {
+				error("%s: /%s/", rerr, s);
+				return NULL;
+			}
+			fatal("invalid regexp: %s: /%s/", rerr, s);
 		}
-		fatal("invalid regexp: %s: /%s/", rerr, s);
-	}
 
-	/* gack. this must be done *after* re_compile_pattern */
-	rp->pat.newline_anchor = false; /* don't get \n in middle of string */
-	if (dfa && ! no_dfa) {
-		rp->dfareg = dfaalloc();
-		dfacopysyntax(rp->dfareg, dfaregs[ignorecase]);
-		dfacomp(buf, len, rp->dfareg, true);
-	} else
-		rp->dfareg = NULL;
-#else
-	int flags = MINRX_REG_EXTENDED;
-	if (ignorecase)
-		flags |= MINRX_REG_ICASE;
-
-	int ret;
-	if ((ret = minrx_regncomp(& rp->mre_pat, len, buf, flags)) != 0) {
-		/* rerr already gettextized inside regex routines */
-		rerr = get_minrx_regerror(ret, rp);
-
-		refree(rp);
-		if (! canfatal) {
-			error("%s: /%s/", rerr, s);
- 			return NULL;
-		}
-		fatal("invalid regexp: %s: /%s/", rerr, s);
-	}
-
-	// Allocate re_nsub + 1, since 0 is the whole thing and 1-N
-	// are for actual parenthesized subexpressions.
-	emalloc(rp->mre_regs, minrx_regmatch_t *,
+		// Allocate re_nsub + 1, since 0 is the whole thing and 1-N
+		// are for actual parenthesized subexpressions.
+		emalloc(rp->mre_regs, minrx_regmatch_t *,
 			(rp->mre_pat.re_nsub + 1) * sizeof(minrx_regmatch_t), "make_regexp");
-#endif
+	}
 
 	/* Additional flags that help with RS as regexp. */
 	for (i = 0; i < len; i++) {
@@ -365,77 +384,82 @@ research(Regexp *rp, char *str, int start,
 	need_start = ((flags & RE_NEED_START) != 0);
 	no_bol = ((flags & RE_NO_BOL) != 0);
 
-	if (no_bol)
-		minrx_flags |= MINRX_REG_NOTBOL;
-#if 0
-	/*
-	 * Always do dfa search if can; if it fails, then even if
-	 * need_start is true, we won't bother with the regex search.
-	 *
-	 * The dfa matcher doesn't have a no_bol flag, so don't bother
-	 * trying it in that case.
-	 *
-	 * 7/2008: Skip the dfa matcher if need_start. The dfa matcher
-	 * has bugs in certain multibyte cases and it's too difficult
-	 * to try to special case things.
-	 * 7/2017: Apparently there are some cases where DFA gets
-	 * stuck, even in the C locale, so we use dfa only if not need_start.
-	 *
-	 * Should that issue ever get resolved, note this comment:
-	 *
-	 * 7/2016: The dfa matcher can't handle a case where searching
-	 * starts in the middle of a string, so don't bother trying it
-	 * in that case.
-	 *	if (rp->dfa && ! no_bol && start == 0) ...
-	 */
-	if (rp->dfareg != NULL && ! no_bol && ! need_start) {
-		struct dfa *superset = dfasuperset(rp->dfareg);
-		if (superset)
-			ret = dfaexec(superset, str+start, str+start+len,
-							true, NULL, NULL);
+	if (use_gnu_matchers) {
+		if (no_bol)
+			rp->pat.not_bol = 1;
 
-		if (ret && (! need_start
-				|| (! superset && dfaisfast(rp->dfareg))))
-			ret = dfaexec(rp->dfareg, str+start, str+start+len,
-						true, NULL, &try_backref);
-	}
+		/*
+		 * Always do dfa search if can; if it fails, then even if
+		 * need_start is true, we won't bother with the regex search.
+		 *
+		 * The dfa matcher doesn't have a no_bol flag, so don't bother
+		 * trying it in that case.
+		 *
+		 * 7/2008: Skip the dfa matcher if need_start. The dfa matcher
+		 * has bugs in certain multibyte cases and it's too difficult
+		 * to try to special case things.
+		 * 7/2017: Apparently there are some cases where DFA gets
+		 * stuck, even in the C locale, so we use dfa only if not need_start.
+		 *
+		 * Should that issue ever get resolved, note this comment:
+		 *
+		 * 7/2016: The dfa matcher can't handle a case where searching
+		 * starts in the middle of a string, so don't bother trying it
+		 * in that case.
+		 *	if (rp->dfa && ! no_bol && start == 0) ...
+		 */
+		if (rp->dfareg != NULL && ! no_bol && ! need_start) {
+			struct dfa *superset = dfasuperset(rp->dfareg);
+			if (superset)
+				ret = dfaexec(superset, str+start, str+start+len,
+								true, NULL, NULL);
 
-	if (ret) {
-		if (   rp->dfareg == NULL
-			|| start != 0
-			|| no_bol
-			|| need_start
-			|| try_backref) {
-			/*
-			 * Passing NULL as last arg speeds up search for cases
-			 * where we don't need the start/end info.
-			 */
-			res = re_search(&(rp->pat), str, start+len,
-				start, len, need_start ? &(rp->regs) : NULL);
+			if (ret && (! need_start
+					|| (! superset && dfaisfast(rp->dfareg))))
+				ret = dfaexec(rp->dfareg, str+start, str+start+len,
+							true, NULL, &try_backref);
+		}
+
+		if (ret) {
+			if (   rp->dfareg == NULL
+				|| start != 0
+				|| no_bol
+				|| need_start
+				|| try_backref) {
+				/*
+				 * Passing NULL as last arg speeds up search for cases
+				 * where we don't need the start/end info.
+				 */
+				res = re_search(&(rp->pat), str, start+len,
+					start, len, need_start ? &(rp->regs) : NULL);
+			} else
+				res = 1;
 		} else
-			res = 1;
-	} else
-		res = -1;
+			res = -1;
 
-	rp->pat.not_bol = 0;
-#else
-	memset(rp->mre_regs, 0, rp->mre_pat.re_nsub * sizeof(minrx_regmatch_t));
+		rp->pat.not_bol = 0;
+	} else {
+		if (no_bol)
+			minrx_flags |= MINRX_REG_NOTBOL;
 
-	if (start > 0) {
-		rp->mre_regs[0].rm_eo = start;
-		minrx_flags |= MINRX_REG_RESUME;
+		memset(rp->mre_regs, 0, (rp->mre_pat.re_nsub + 1) * sizeof(minrx_regmatch_t));
+
+		if (start > 0) {
+			rp->mre_regs[0].rm_eo = start;
+			minrx_flags |= MINRX_REG_RESUME;
+		}
+
+		res = minrx_regnexec(&(rp->mre_pat),
+				len, str,
+				need_start ? rp->mre_pat.re_nsub + 1 : 1,
+				need_start ? rp->mre_regs : NULL,
+				minrx_flags);
+		if (res == 0)
+			res = rp->mre_regs[0].rm_so;
+		else
+			res = -1;
 	}
 
-	res = minrx_regnexec(&(rp->mre_pat),
-			len, str,
-			need_start ? rp->mre_pat.re_nsub : 1,
-			need_start ? rp->mre_regs : NULL,
-			minrx_flags);
-	if (res == 0)
-		res = rp->mre_regs[0].rm_so;
-	else
-		res = -1;
-#endif
 	return res;
 }
 
@@ -446,6 +470,16 @@ refree(Regexp *rp)
 {
 	if (rp == NULL)
 		return;
+	rp->pat.translate = NULL;
+	regfree(& rp->pat);
+	if (rp->regs.start)
+		free(rp->regs.start);
+	if (rp->regs.end)
+		free(rp->regs.end);
+	if (rp->dfareg != NULL) {
+		dfafree(rp->dfareg);
+		free(rp->dfareg);
+	}
 	efree(rp->mre_regs);
 	efree(rp);
 }
@@ -559,7 +593,6 @@ resetup()
 	 *	Aharon Robbins <arnold@skeeve.com>
 	 *	Sun, 21 Oct 2007 23:55:33 +0200
 	 */
-#if 0
 	if (do_posix)
 		syn = RE_SYNTAX_POSIX_AWK;	/* strict POSIX re's */
 	else if (do_traditional)
@@ -582,7 +615,6 @@ resetup()
 		syn |= RE_INTERVALS | RE_INVALID_INTERVAL_ORD | RE_NO_BK_BRACES;
 
 	(void) re_set_syntax(syn);
-#endif
 }
 
 /* using_utf8 --- are we using utf8 */
@@ -618,9 +650,6 @@ reisstring(const char *text, size_t len, Regexp *re, const char *buf)
 const char *
 reflags2str(int flagval)
 {
-#if 1
-	return "";
-#else
 	static const struct flagtab values[] = {
 		{ RE_BACKSLASH_ESCAPE_IN_LISTS, "RE_BACKSLASH_ESCAPE_IN_LISTS" },
 		{ RE_BK_PLUS_QM, "RE_BK_PLUS_QM" },
@@ -654,7 +683,6 @@ reflags2str(int flagval)
 		return "RE_SYNTAX_EMACS";
 
 	return genflags2str(flagval, values);
-#endif
 }
 
 /*
@@ -773,4 +801,59 @@ again:
 	}
 done:
 	s[length] = save;
+}
+
+/* re_restart --- return start of match */
+
+int
+re_restart(Regexp *rp, const char *s)
+{
+	if (use_gnu_matchers)
+		return rp->regs.start[0];
+	else
+		return rp->mre_regs[0].rm_so;
+}
+
+/* re_reend --- return end of match */
+
+int
+re_reend(Regexp *rp, const char *s)
+{
+	if (use_gnu_matchers)
+		return rp->regs.end[0];
+	else
+		return rp->mre_regs[0].rm_eo;
+}
+
+/* re_resubpatstart --- return start of subpattern match */
+
+int
+re_subpatstart(Regexp *rp, const char *s, int n)
+{
+	if (use_gnu_matchers)
+		return rp->regs.start[n];
+	else
+		return rp->mre_regs[n].rm_so;
+}
+
+/* re_resubpatend --- return end of subpattern match */
+
+int
+re_subpatend(Regexp *rp, const char *s, int n)
+{
+	if (use_gnu_matchers)
+		return rp->regs.end[n];
+	else
+		return rp->mre_regs[n].rm_eo;
+}
+
+/* re_numsubpats --- return number of subpatterns */
+
+int
+re_numsubpats(Regexp *rp, const char *s)
+{
+	if (use_gnu_matchers)
+		return rp->regs.num_regs;
+	else
+		return rp->mre_pat.re_nsub;
 }

@@ -145,6 +145,7 @@ static const char *locale_dir = LOCALEDIR;	/* default locale dir */
 #ifdef USE_PERSISTENT_MALLOC
 const char *get_pma_version(void);
 #endif
+bool use_gnu_matchers = false;	/* Use gnu matchers, not minrx */
 
 int use_lc_numeric = false;	/* obey locale for decimal point */
 
@@ -316,6 +317,9 @@ main(int argc, char **argv)
 	push_context(new_context());
 
 	parse_args(argc, argv);
+
+	if (getenv("GAWK_GNU_MATCHERS") != NULL)
+		use_gnu_matchers = true;
 
 #if defined(LOCALEDEBUG)
 	if (locale != initial_locale)
@@ -1581,7 +1585,8 @@ parse_args(int argc, char **argv)
 	/*
 	 * The + on the front tells GNU getopt not to rearrange argv.
 	 */
-	const char *optlist = "+F:f:v:W;bcCd::D::e:E:ghi:kIl:L::nNo::Op::MPrSstVYZ:";
+	// FIXME: 'G' is temporary
+	const char *optlist = "+F:f:v:W;bcCd::D::e:E:ghi:kIl:L::nNo::Op::MPrSstVYZ:G";
 	int old_optind;
 	int c;
 	char *scan;
@@ -1665,6 +1670,10 @@ parse_args(int argc, char **argv)
 
 		case 'g':
 			do_flags |= DO_INTL;
+			break;
+
+		case 'G':	// FIXME: command line option is temporary
+			use_gnu_matchers = true;
 			break;
 
 		case 'h':
