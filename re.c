@@ -29,6 +29,7 @@
 
 static void check_bracket_exp(char *s, size_t len);
 const char *regexflags2str(int flags);
+static const char *get_minrx_regerror(int errcode, Regexp *rp);
 
 static struct localeinfo localeinfo;
 
@@ -315,7 +316,7 @@ make_regexp(const char *s, size_t len, bool ignorecase, bool dfa, bool canfatal)
 	if ((ret = minrx_regncomp(& rp->mre_pat, len, buf, flags)) != 0) {
 		refree(rp);
 		/* rerr already gettextized inside regex routines */
-		rerr = minrx_regerror(ret);
+		rerr = get_minrx_regerror(ret, rp);
 		if (! canfatal) {
 			error("%s: /%s/", rerr, s);
  			return NULL;
@@ -415,13 +416,20 @@ research(Regexp *rp, char *str, int start,
 
 	rp->pat.not_bol = 0;
 #else
+	memset(rp->mre_regs, 0, rp->mre_pat.re_nsub * sizeof(minrx_regmatch_t));
+
+	if (start > 0) {
+		rp->mre_regs[0].rm_eo = start;
+		minrx_flags |= MINRX_REG_RESUME;
+	}
+
 	res = minrx_regnexec(&(rp->mre_pat),
-			len, str + start,
+			len, str,
 			need_start ? rp->mre_pat.re_nsub : 1,
 			need_start ? rp->mre_regs : NULL,
 			minrx_flags);
 	if (res == 0)
-		res = rp->mre_regs[0].rm_so + start;
+		res = rp->mre_regs[0].rm_so;
 	else
 		res = -1;
 #endif
@@ -437,6 +445,28 @@ refree(Regexp *rp)
 		return;
 	efree(rp->mre_regs);
 	efree(rp);
+}
+
+/* get_minrx_regerror --- return the error as a string, hide ugly POSIX interface */
+
+static const char *
+get_minrx_regerror(int errcode, Regexp *rp)
+{
+	static char *buf, *p;
+	static size_t bufsize;
+	static int count;
+
+	if (buf == NULL) {	// first time through, allocate the buffer
+		bufsize = 100;
+		emalloc(buf, char *, bufsize, "get_minrx_regerror");
+	}
+
+	while ((count = minrx_regerror(errcode, & rp->mre_pat, buf, bufsize)) > bufsize) {
+		bufsize *= 2;
+		erealloc(buf, char *, bufsize, "get_minrx_regerror");
+	}
+
+	return buf;
 }
 
 /* dfaerror --- print an error message for the dfa routines */
