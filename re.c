@@ -314,9 +314,10 @@ make_regexp(const char *s, size_t len, bool ignorecase, bool dfa, bool canfatal)
 
 	int ret;
 	if ((ret = minrx_regncomp(& rp->mre_pat, len, buf, flags)) != 0) {
-		refree(rp);
 		/* rerr already gettextized inside regex routines */
 		rerr = get_minrx_regerror(ret, rp);
+
+		refree(rp);
 		if (! canfatal) {
 			error("%s: /%s/", rerr, s);
  			return NULL;
@@ -324,8 +325,10 @@ make_regexp(const char *s, size_t len, bool ignorecase, bool dfa, bool canfatal)
 		fatal("invalid regexp: %s: /%s/", rerr, s);
 	}
 
+	// Allocate re_nsub + 1, since 0 is the whole thing and 1-N
+	// are for actual parenthesized subexpressions.
 	emalloc(rp->mre_regs, minrx_regmatch_t *,
-			rp->mre_pat.re_nsub * sizeof(minrx_regmatch_t), "make_regexp");
+			(rp->mre_pat.re_nsub + 1) * sizeof(minrx_regmatch_t), "make_regexp");
 #endif
 
 	/* Additional flags that help with RS as regexp. */
