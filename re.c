@@ -452,7 +452,7 @@ research(Regexp *rp, char *str, int start,
 		res = minrx_regnexec(&(rp->mre_pat),
 				len, str,
 				need_start ? rp->mre_pat.re_nsub + 1 : 1,
-				need_start ? rp->mre_regs : NULL,
+				rp->mre_regs,
 				minrx_flags);
 		if (res == 0)
 			res = rp->mre_regs[0].rm_so;
@@ -489,7 +489,7 @@ refree(Regexp *rp)
 static const char *
 get_minrx_regerror(int errcode, Regexp *rp)
 {
-	static char *buf, *p;
+	static char *buf;
 	static size_t bufsize;
 	static int count;
 
