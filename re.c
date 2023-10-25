@@ -327,7 +327,7 @@ make_regexp(const char *s, size_t len, bool ignorecase, bool dfa, bool canfatal)
 		} else
 			rp->dfareg = NULL;
 	} else {
-		int flags = MINRX_REG_EXTENDED;
+		int flags = MINRX_REG_EXTENDED | MINRX_REG_ESCAPE_BRACK;
 		int ret;
 
 		if (ignorecase)
