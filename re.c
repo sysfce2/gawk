@@ -218,6 +218,24 @@ make_regexp(const char *s, size_t len, bool ignorecase, bool dfa, bool canfatal)
 			}
 		}
 			break;
+		case '`':
+			/* gnu regex op */
+			if (! do_traditional) {
+				*dest++ = '^';
+				src++;
+				break;
+			}
+			else
+				goto do_default;
+		case '\'':
+			/* gnu regex op */
+			if (! do_traditional) {
+				*dest++ = '$';
+				src++;
+				break;
+			}
+			else
+				goto do_default;
 		case 'y':	/* normally \b */
 			/* gnu regex op */
 			if (! do_traditional) {
@@ -236,6 +254,7 @@ make_regexp(const char *s, size_t len, bool ignorecase, bool dfa, bool canfatal)
 			 * once the awk program is running. Therefore,
 			 * neither does ok_to_escape.
 			 */
+		do_default:
 			if (ok_to_escape == NULL) {
 				if (do_posix || do_traditional)
 					ok_to_escape = "{}()|*+?.^$\\[]/-";
@@ -332,6 +351,9 @@ make_regexp(const char *s, size_t len, bool ignorecase, bool dfa, bool canfatal)
 
 		if (ignorecase)
 			flags |= MINRX_REG_ICASE;
+
+		if (syn == RE_SYNTAX_GNU_AWK)
+			flags |= (MINRX_REG_EXTENSIONS_GNU | MINRX_REG_EXTENSIONS_BSD);
 
 		if ((ret = minrx_regncomp(& rp->mre_pat, len, buf, flags)) != 0) {
 			/* rerr already gettextized inside regex routines */
