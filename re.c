@@ -220,7 +220,7 @@ make_regexp(const char *s, size_t len, bool ignorecase, bool dfa, bool canfatal)
 			break;
 		case '`':
 			/* gnu regex op */
-			if (! do_traditional) {
+			if (! do_traditional && ! use_gnu_matchers) {
 				*dest++ = '^';
 				src++;
 				break;
@@ -229,7 +229,7 @@ make_regexp(const char *s, size_t len, bool ignorecase, bool dfa, bool canfatal)
 				goto do_default;
 		case '\'':
 			/* gnu regex op */
-			if (! do_traditional) {
+			if (! do_traditional && ! use_gnu_matchers) {
 				*dest++ = '$';
 				src++;
 				break;
