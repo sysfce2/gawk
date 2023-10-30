@@ -218,24 +218,6 @@ make_regexp(const char *s, size_t len, bool ignorecase, bool dfa, bool canfatal)
 			}
 		}
 			break;
-		case '`':
-			/* gnu regex op */
-			if (! do_traditional && ! use_gnu_matchers) {
-				*dest++ = '^';
-				src++;
-				break;
-			}
-			else
-				goto do_default;
-		case '\'':
-			/* gnu regex op */
-			if (! do_traditional && ! use_gnu_matchers) {
-				*dest++ = '$';
-				src++;
-				break;
-			}
-			else
-				goto do_default;
 		case 'y':	/* normally \b */
 			/* gnu regex op */
 			if (! do_traditional) {
