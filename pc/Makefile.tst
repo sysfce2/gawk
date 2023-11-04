@@ -171,6 +171,7 @@ BASIC_TESTS = \
 	printf0 printf1 printfchar prmarscl prmreuse prt1eval prtoeval \
 	rand randtest range1 range2 readbuf rebrackloc rebt8b1 rebuild \
 	redfilnm regeq regex3minus regexpbad regexpbrack regexpbrack2 \
+	regexpuparrow \
 	regexprange regrange reindops reparse resplit rri1 rs rscompat \
 	rsnul1nl rsnulbig rsnulbig2 rsnullre rsnulw rstest1 rstest2 \
 	rstest3 rstest4 rstest5 rswhite scalar sclforin sclifin setrec0 \
@@ -1503,12 +1504,12 @@ clsflnam:
 
 cmdlinefsbacknl:
 	@echo $@
-	@-$(LOCALES) AWK="$(AWKPROG)" "$(srcdir)"/$@.sh  > _$@ 2>&1 || echo EXIT CODE: $$? >>_$@
+	@-$(LOCALES) AWK="$(AWKPROG) $(GAWK_TEST_ARGS)" "$(srcdir)"/$@.sh  > _$@ 2>&1 || echo EXIT CODE: $$? >>_$@
 	@-$(CMP) "$(srcdir)"/$@.ok _$@ && rm -f _$@
 
 cmdlinefsbacknl2:
 	@echo $@
-	@-$(LOCALES) AWK="$(AWKPROG)" "$(srcdir)"/$@.sh  > _$@ 2>&1 || echo EXIT CODE: $$? >>_$@
+	@-$(LOCALES) AWK="$(AWKPROG) $(GAWK_TEST_ARGS)" "$(srcdir)"/$@.sh  > _$@ 2>&1 || echo EXIT CODE: $$? >>_$@
 	@-$(CMP) "$(srcdir)"/$@.ok _$@ && rm -f _$@
 
 compare2:
@@ -2274,6 +2275,11 @@ regexpbrack:
 	@-$(CMP) "$(srcdir)"/$@.ok _$@ && rm -f _$@
 
 regexpbrack2:
+	@echo $@
+	@-AWKPATH="$(srcdir)" $(AWK) -f $@.awk  < "$(srcdir)"/$@.in >_$@ 2>&1 || echo EXIT CODE: $$? >>_$@
+	@-$(CMP) "$(srcdir)"/$@.ok _$@ && rm -f _$@
+
+regexpuparrow:
 	@echo $@
 	@-AWKPATH="$(srcdir)" $(AWK) -f $@.awk  < "$(srcdir)"/$@.in >_$@ 2>&1 || echo EXIT CODE: $$? >>_$@
 	@-$(CMP) "$(srcdir)"/$@.ok _$@ && rm -f _$@
