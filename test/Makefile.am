@@ -1155,9 +1155,9 @@ EXTRA_DIST = \
 	regexpbrack2.ok \
 	regexprange.awk \
 	regexprange.ok \
-	regexpuparror.awk \
-	regexpuparror.in \
-	regexpuparror.ok \
+	regexpuparrow.awk \
+	regexpuparrow.in \
+	regexpuparrow.ok \
 	regexsub.awk \
 	regexsub.ok \
 	reginttrad.awk \
